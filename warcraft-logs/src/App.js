@@ -29,7 +29,7 @@ function App() {
       );
   }, [guildName, serverName]);
 
-  function handleFormSubmit(event) {
+  function handleGuildSearch(event) {
     const guildNameValue = document.getElementById('guild-name').value.toLowerCase().replace(/\s/g, '-');
     const serverNameValue = document.getElementById('server-name').value.toLowerCase().replace(/\s/g, '-');
     setGuildName(guildNameValue);
@@ -50,11 +50,11 @@ function App() {
     const characterCount = characterLevelFilter.length;
     return (
       <div className='wrapper'>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleGuildSearch}>
           <input type='search' name='guild-name' id='guild-name' placeholder='Guild Name' />
           <input type='search' name='server-name' id='server-name' placeholder='Server Name' />
           <button name='search-button' id='search-button'>
-            Get
+            Search
           </button>
         </form>
         <h1>
