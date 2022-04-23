@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import './App.scss';
 
 function App() {
   const characterLevelMax = 60;
@@ -9,10 +9,12 @@ function App() {
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [guildName, setGuildName] = useState('no-thanks');
+  const [serverName, setServerName] = useState('firetree');
 
   useEffect(() => {
     fetch(
-      'https://us.api.blizzard.com/data/wow/guild/firetree/no-thanks/roster?namespace=profile-us&locale=en_US&access_token=USU4dJSlxXbxtsnkM6Eyyl4JRkx7rh3kXI'
+      `https://us.api.blizzard.com/data/wow/guild/${serverName}/${guildName}/roster?namespace=profile-us&locale=en_US&access_token=USU4dJSlxXbxtsnkM6Eyyl4JRkx7rh3kXI`
     )
       .then(res => res.json())
       .then(
@@ -25,7 +27,15 @@ function App() {
           setError(error);
         }
       );
-  }, []);
+  }, [guildName, serverName]);
+
+  function handleFormSubmit(event) {
+    const guildNameValue = document.getElementById('guild-name').value.toLowerCase().replace(/\s/g, '-');
+    const serverNameValue = document.getElementById('server-name').value.toLowerCase().replace(/\s/g, '-');
+    setGuildName(guildNameValue);
+    setServerName(serverNameValue);
+    event.preventDefault();
+  }
 
   function handleCharacterLevel(event) {
     setCharacterLevel(parseInt(event.target.value));
@@ -40,11 +50,16 @@ function App() {
     const characterCount = characterLevelFilter.length;
     return (
       <div className='wrapper'>
+        <form onSubmit={handleFormSubmit}>
+          <input type='search' name='guild-name' id='guild-name' placeholder='Guild Name' />
+          <input type='search' name='server-name' id='server-name' placeholder='Server Name' />
+          <button name='search-button' id='search-button'>
+            Get
+          </button>
+        </form>
         <h1>
-          <span>
-            {'<'}No Thanks{'>'}
-          </span>{' '}
-          - Guild
+          <span className={characters.guild.faction.name}>{`<${characters.guild.name}>`}</span>
+          <em>- {characters.guild.realm.name}</em>
         </h1>
         <label htmlFor='character-level'>Select Character Level</label>
         <select name='character-level' id='character-level' onChange={handleCharacterLevel}>

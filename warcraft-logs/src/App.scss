@@ -1,0 +1,144 @@
+// WoW - UI Colors
+$clr-bg: #1a1c23;
+$clr-text: #ffffff;
+$clr-text-lesser: #b8b9bb;
+$clr-baby-blue: #7abfff;
+$clr-horde: #e02929;
+$clr-alliance: #69f;
+$clr-bg-light-shade: #292b33;
+$clr-bg-lighter-shade: #36373f;
+
+// WoW - Class Colors - // Class ID
+$clr-warrior: #c69b6d; // 1
+$clr-paladin: #f48cba; // 2
+$clr-hunter: #aad372; // 3
+$clr-rogue: #fff468; // 4
+$clr-priest: #ffffff; // 5
+$clr-death-knight: #c41e3a; // 6
+$clr-shaman: #0070dd; // 7
+$clr-mage: #3fc7eb; // 8
+$clr-warlock: #8788ee; // 9
+$clr-monk: #00ff98; // 10
+$clr-druid: #ff7c0a; // 11
+$clr-demon-hunter: #a330c9; // 12
+
+// Layout
+body {
+  background-color: $clr-bg;
+  color: $clr-text;
+  line-height: 1.2;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  form {
+    display: flex;
+    input {
+      font-size: 1.25rem;
+      color: $clr-text;
+      padding: 0.5rem;
+      border: 1px $clr-bg-lighter-shade solid;
+      background-color: $clr-bg-light-shade;
+    }
+    button {
+      font-size: 1.25rem;
+      color: $clr-text;
+      padding: 0.5rem 1rem;
+      border: 1px $clr-bg-lighter-shade solid;
+      background-color: $clr-baby-blue;
+      cursor: pointer;
+    }
+  }
+  h1 {
+    .Horde {
+      color: $clr-horde;
+    }
+    .Alliance {
+      color: $clr-alliance;
+    }
+    em {
+      color: $clr-baby-blue;
+      font-style: normal;
+      margin-left: 0.25rem;
+    }
+  }
+  h2 {
+    em {
+      color: $clr-baby-blue;
+      font-style: normal;
+    }
+    span {
+      color: $clr-text-lesser;
+      font-weight: normal;
+    }
+  }
+  label {
+    color: $clr-text-lesser;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  select {
+    font-size: 1.5rem;
+    color: $clr-text;
+    padding: 0.5rem;
+    border: 1px $clr-bg-lighter-shade solid;
+    background-color: $clr-bg-light-shade;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    li {
+      list-style: none;
+      line-height: 1.5;
+      em {
+        color: $clr-text-lesser;
+        font-style: normal;
+      }
+      a {
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+        &[data-wow-class='1'] {
+          color: $clr-warrior;
+        }
+        &[data-wow-class='2'] {
+          color: $clr-paladin;
+        }
+        &[data-wow-class='3'] {
+          color: $clr-hunter;
+        }
+        &[data-wow-class='4'] {
+          color: $clr-rogue;
+        }
+        &[data-wow-class='5'] {
+          color: $clr-priest;
+        }
+        &[data-wow-class='6'] {
+          color: $clr-death-knight;
+        }
+        &[data-wow-class='7'] {
+          color: $clr-shaman;
+        }
+        &[data-wow-class='8'] {
+          color: $clr-mage;
+        }
+        &[data-wow-class='9'] {
+          color: $clr-warlock;
+        }
+        &[data-wow-class='10'] {
+          color: $clr-monk;
+        }
+        &[data-wow-class='11'] {
+          color: $clr-druid;
+        }
+        &[data-wow-class='12'] {
+          color: $clr-demon-hunter;
+        }
+      }
+    }
+  }
+}
