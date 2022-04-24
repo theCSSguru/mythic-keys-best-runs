@@ -8,40 +8,107 @@ $clr-alliance: #69f;
 $clr-bg-light-shade: #292b33;
 $clr-bg-lighter-shade: #36373f;
 
-// WoW - Class Colors - // Class ID
-$clr-warrior: #c69b6d; // 1
-$clr-paladin: #f48cba; // 2
-$clr-hunter: #aad372; // 3
-$clr-rogue: #fff468; // 4
-$clr-priest: #ffffff; // 5
-$clr-death-knight: #c41e3a; // 6
-$clr-shaman: #0070dd; // 7
-$clr-mage: #3fc7eb; // 8
-$clr-warlock: #8788ee; // 9
-$clr-monk: #00ff98; // 10
-$clr-druid: #ff7c0a; // 11
-$clr-demon-hunter: #a330c9; // 12
+// WoW - Class Colors
+$clr-warrior: #c69b6d;
+$clr-paladin: #f48cba;
+$clr-hunter: #aad372;
+$clr-rogue: #fff468;
+$clr-priest: #ffffff;
+$clr-death-knight: #c41e3a;
+$clr-shaman: #0070dd;
+$clr-mage: #3fc7eb;
+$clr-warlock: #8788ee;
+$clr-monk: #00ff98;
+$clr-druid: #ff7c0a;
+$clr-demon-hunter: #a330c9;
+
+// Focus Border
+@mixin focusBorder {
+  outline: 1px solid $clr-baby-blue;
+}
 
 // Layout
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+  min-height: 100%;
+}
 body {
   background-color: $clr-bg;
   color: $clr-text;
   line-height: 1.2;
+  overflow: hidden;
 }
 .wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  margin: 2rem 0;
+  height: 100%;
+  padding: 3rem 0;
+  position: relative;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: $clr-bg;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: $clr-bg-lighter-shade;
+  }
+  &:before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 300px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    opacity: 0.25;
+  }
+  &.Horde {
+    &:before {
+      background: linear-gradient(0deg, $clr-bg 0%, $clr-horde 100%);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $clr-horde;
+    }
+  }
+  &.Alliance {
+    &:before {
+      background: linear-gradient(0deg, $clr-bg 0%, $clr-alliance 100%);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $clr-alliance;
+    }
+  }
   form {
     display: flex;
+    gap: 0.125rem;
     input {
       font-size: 1.25rem;
       color: $clr-text;
       padding: 0.5rem;
       border: 1px $clr-bg-lighter-shade solid;
       background-color: $clr-bg-light-shade;
+      outline: none;
+      &:focus {
+        @include focusBorder;
+      }
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus {
+        border: 1px solid $clr-bg-lighter-shade;
+        -webkit-text-fill-color: $clr-text;
+        -webkit-box-shadow: 0 0 0px 1000px $clr-bg-light-shade inset;
+        @include focusBorder;
+      }
     }
     button {
       font-size: 1.25rem;
@@ -50,6 +117,14 @@ body {
       border: 1px $clr-bg-lighter-shade solid;
       background-color: $clr-baby-blue;
       cursor: pointer;
+      &:focus {
+        @include focusBorder;
+      }
+    }
+    & + small {
+      color: $clr-text-lesser;
+      display: block;
+      margin-top: 0.5rem;
     }
   }
   h1 {
@@ -75,17 +150,25 @@ body {
       font-weight: normal;
     }
   }
-  label {
-    color: $clr-text-lesser;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  select {
-    font-size: 1.5rem;
-    color: $clr-text;
-    padding: 0.5rem;
-    border: 1px $clr-bg-lighter-shade solid;
-    background-color: $clr-bg-light-shade;
+  .selectors {
+    display: flex;
+    gap: 4rem;
+    text-align: center;
+    label {
+      color: $clr-text-lesser;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    select {
+      font-size: 1.5rem;
+      color: $clr-text;
+      padding: 0.5rem;
+      border: 1px $clr-bg-lighter-shade solid;
+      background-color: $clr-bg-light-shade;
+      &:focus {
+        @include focusBorder;
+      }
+    }
   }
   ul {
     margin: 0;
@@ -102,40 +185,43 @@ body {
         &:hover {
           text-decoration: underline;
         }
-        &[data-wow-class='1'] {
+        &:focus {
+          @include focusBorder;
+        }
+        &[data-wow-class='Warrior'] {
           color: $clr-warrior;
         }
-        &[data-wow-class='2'] {
+        &[data-wow-class='Paladin'] {
           color: $clr-paladin;
         }
-        &[data-wow-class='3'] {
+        &[data-wow-class='Hunter'] {
           color: $clr-hunter;
         }
-        &[data-wow-class='4'] {
+        &[data-wow-class='Rogue'] {
           color: $clr-rogue;
         }
-        &[data-wow-class='5'] {
+        &[data-wow-class='Priest'] {
           color: $clr-priest;
         }
-        &[data-wow-class='6'] {
+        &[data-wow-class='Death Knight'] {
           color: $clr-death-knight;
         }
-        &[data-wow-class='7'] {
+        &[data-wow-class='Shaman'] {
           color: $clr-shaman;
         }
-        &[data-wow-class='8'] {
+        &[data-wow-class='Mage'] {
           color: $clr-mage;
         }
-        &[data-wow-class='9'] {
+        &[data-wow-class='Warlock'] {
           color: $clr-warlock;
         }
-        &[data-wow-class='10'] {
+        &[data-wow-class='Monk'] {
           color: $clr-monk;
         }
-        &[data-wow-class='11'] {
+        &[data-wow-class='Druid'] {
           color: $clr-druid;
         }
-        &[data-wow-class='12'] {
+        &[data-wow-class='Demon Hunter'] {
           color: $clr-demon-hunter;
         }
       }
