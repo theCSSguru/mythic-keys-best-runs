@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { CharacterContext } from '../contexts/CharacterProvider';
 import { wowClassNames } from '../Helpers';
 
-export const FilterBar = ({ data }) => {
+export const FilterBar = () => {
   console.count('filterBarRender: ');
 
+  const { data, characters, setCharacters } = useContext(CharacterContext);
+
   const characterClassArray = Array.from(Array(12).keys());
-  const [characterClass, setCharacterClass] = useState('DEFAULT');
-  const [characterFilter, setCharacterFilter] = useState([]);
+  const [characterClassId, setCharacterClassId] = useState('DEFAULT');
 
   const filterCharacterClass = e => {
-    setCharacterClass(parseInt(e.target.value));
-    setCharacterFilter(data.members.filter(member => member.character.playable_class.id === parseInt(e.target.value)));
+    setCharacterClassId(parseInt(e.target.value));
+    setCharacters(characters.filter(member => member.character.playable_class.id === parseInt(e.target.value)));
   };
 
   return (
@@ -27,7 +29,7 @@ export const FilterBar = ({ data }) => {
           <select
             name='characterClass'
             id='characterClass'
-            defaultValue={characterClass}
+            defaultValue={characterClassId}
             onChange={filterCharacterClass}
           >
             <option value='DEFAULT' disabled>

@@ -114,11 +114,16 @@ body {
       font-size: 1.25rem;
       color: $clr-text;
       padding: 0.5rem 1rem;
-      border: 1px $clr-bg-lighter-shade solid;
-      background-color: $clr-baby-blue;
+      border: none;
       cursor: pointer;
       &:focus {
         @include focusBorder;
+      }
+      @at-root .Horde .search-bar button {
+        background-color: $clr-horde;
+      }
+      @at-root .Alliance .search-bar button {
+        background-color: $clr-alliance;
       }
     }
     & + small {
@@ -138,7 +143,6 @@ body {
       color: $clr-alliance;
     }
     em {
-      color: $clr-baby-blue;
       font-style: normal;
       margin-left: 0.25rem;
     }

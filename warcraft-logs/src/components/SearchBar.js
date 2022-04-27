@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { CharacterContext } from '../contexts/CharacterProvider';
 import { urlFriendly } from '../Helpers';
 
-export const SearchBar = ({ setServerName, setGuildName, serverName, guildName, data, loading, loaded, error }) => {
+export const SearchBar = () => {
   console.count('searchBarRender: ');
+
+  const { data, loading, loaded, error, serverName, setServerName, guildName, setGuildName } =
+    useContext(CharacterContext);
 
   const maxLevelOnly = data.members.filter(member => member.character.level === 60);
 

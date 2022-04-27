@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { CharacterContext } from '../contexts/CharacterProvider';
 import { urlFriendly, wowClassNames } from '../Helpers';
 
-export const Characters = ({ data, serverName }) => {
+export const Characters = () => {
   console.count('charactersRender: ');
+
+  const { data, serverName } = useContext(CharacterContext);
 
   const maxLevelOnly = data.members.filter(member => member.character.level === 60);
 
