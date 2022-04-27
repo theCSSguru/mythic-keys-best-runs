@@ -125,6 +125,9 @@ body {
       color: $clr-text-lesser;
       display: block;
       margin-top: 0.5rem;
+      .error {
+        color: red;
+      }
     }
   }
   h1 {
@@ -150,79 +153,85 @@ body {
       font-weight: normal;
     }
   }
-  .selectors {
-    display: flex;
-    gap: 4rem;
-    text-align: center;
-    label {
-      color: $clr-text-lesser;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    select {
-      font-size: 1.5rem;
-      color: $clr-text;
-      padding: 0.5rem;
-      border: 1px $clr-bg-lighter-shade solid;
-      background-color: $clr-bg-light-shade;
-      &:focus {
-        @include focusBorder;
-      }
-    }
-  }
-  ul {
-    margin: 0;
-    padding: 0;
-    li {
-      list-style: none;
-      line-height: 1.5;
-      em {
+  .filter-bar {
+    .selectors {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      text-align: center;
+      label {
         color: $clr-text-lesser;
-        font-style: normal;
+        display: block;
+        margin-bottom: 0.5rem;
       }
-      a {
-        text-decoration: none;
-        &:hover {
-          text-decoration: underline;
-        }
+      select {
+        font-size: 1.5rem;
+        color: $clr-text;
+        padding: 0.5rem;
+        border: 1px $clr-bg-lighter-shade solid;
+        background-color: $clr-bg-light-shade;
         &:focus {
           @include focusBorder;
         }
-        &[data-wow-class='Warrior'] {
-          color: $clr-warrior;
+      }
+    }
+  }
+  .characters {
+    margin: 1rem 0 0;
+    ul {
+      margin: 0;
+      padding: 0;
+      li {
+        list-style: none;
+        line-height: 1.5;
+        em {
+          color: $clr-text-lesser;
+          font-style: normal;
         }
-        &[data-wow-class='Paladin'] {
-          color: $clr-paladin;
-        }
-        &[data-wow-class='Hunter'] {
-          color: $clr-hunter;
-        }
-        &[data-wow-class='Rogue'] {
-          color: $clr-rogue;
-        }
-        &[data-wow-class='Priest'] {
-          color: $clr-priest;
-        }
-        &[data-wow-class='Death Knight'] {
-          color: $clr-death-knight;
-        }
-        &[data-wow-class='Shaman'] {
-          color: $clr-shaman;
-        }
-        &[data-wow-class='Mage'] {
-          color: $clr-mage;
-        }
-        &[data-wow-class='Warlock'] {
-          color: $clr-warlock;
-        }
-        &[data-wow-class='Monk'] {
-          color: $clr-monk;
-        }
-        &[data-wow-class='Druid'] {
-          color: $clr-druid;
-        }
-        &[data-wow-class='Demon Hunter'] {
-          color: $clr-demon-hunter;
+        a {
+          text-decoration: none;
+          &:hover {
+            text-decoration: underline;
+          }
+          &:focus {
+            @include focusBorder;
+          }
+          &[data-wow-class='Warrior'] {
+            color: $clr-warrior;
+          }
+          &[data-wow-class='Paladin'] {
+            color: $clr-paladin;
+          }
+          &[data-wow-class='Hunter'] {
+            color: $clr-hunter;
+          }
+          &[data-wow-class='Rogue'] {
+            color: $clr-rogue;
+          }
+          &[data-wow-class='Priest'] {
+            color: $clr-priest;
+          }
+          &[data-wow-class='Death Knight'] {
+            color: $clr-death-knight;
+          }
+          &[data-wow-class='Shaman'] {
+            color: $clr-shaman;
+          }
+          &[data-wow-class='Mage'] {
+            color: $clr-mage;
+          }
+          &[data-wow-class='Warlock'] {
+            color: $clr-warlock;
+          }
+          &[data-wow-class='Monk'] {
+            color: $clr-monk;
+          }
+          &[data-wow-class='Druid'] {
+            color: $clr-druid;
+          }
+          &[data-wow-class='Demon Hunter'] {
+            color: $clr-demon-hunter;
+          }
         }
       }
     }
