@@ -7,6 +7,7 @@ $clr-horde: #e02929;
 $clr-alliance: #69f;
 $clr-bg-light-shade: #292b33;
 $clr-bg-lighter-shade: #36373f;
+$clr-border-dark: #111111;
 
 // WoW - Class Colors
 $clr-warrior: #c69b6d;
@@ -51,6 +52,12 @@ body {
   padding: 3rem 0;
   position: relative;
   overflow: auto;
+  .error {
+    color: red;
+  }
+  .loading {
+    color: $clr-text-lesser;
+  }
   &::-webkit-scrollbar {
     width: 0.5rem;
   }
@@ -88,63 +95,62 @@ body {
       background: $clr-alliance;
     }
   }
-  form {
-    display: flex;
-    gap: 0.125rem;
-    input {
-      font-size: 1.25rem;
-      color: $clr-text;
-      padding: 0.5rem;
-      border: 1px $clr-bg-lighter-shade solid;
-      background-color: $clr-bg-light-shade;
-      outline: none;
-      &:focus {
-        @include focusBorder;
+  .search-bar {
+    margin-bottom: 1.5rem;
+    form {
+      display: flex;
+      gap: 0.125rem;
+      input {
+        font-size: 1.25rem;
+        color: $clr-text;
+        padding: 0.5rem;
+        border: 1px $clr-bg-lighter-shade solid;
+        background-color: $clr-bg-light-shade;
+        outline: none;
+        &:focus {
+          @include focusBorder;
+        }
+        &:-webkit-autofill,
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus {
+          border: 1px solid $clr-bg-lighter-shade;
+          -webkit-text-fill-color: $clr-text;
+          -webkit-box-shadow: 0 0 0px 1000px $clr-bg-light-shade inset;
+          @include focusBorder;
+        }
       }
-      &:-webkit-autofill,
-      &:-webkit-autofill:hover,
-      &:-webkit-autofill:focus {
-        border: 1px solid $clr-bg-lighter-shade;
-        -webkit-text-fill-color: $clr-text;
-        -webkit-box-shadow: 0 0 0px 1000px $clr-bg-light-shade inset;
-        @include focusBorder;
+      button {
+        font-size: 1.25rem;
+        color: $clr-text;
+        padding: 0.5rem 1rem;
+        background-color: $clr-baby-blue;
+        border: none;
+        cursor: pointer;
+        &:focus {
+          @include focusBorder;
+        }
+        @at-root .wrapper.Horde .search-bar button {
+          background-color: $clr-horde;
+        }
+        @at-root .wrapper.Alliance .search-bar button {
+          background-color: $clr-alliance;
+        }
       }
-    }
-    button {
-      font-size: 1.25rem;
-      color: $clr-text;
-      padding: 0.5rem 1rem;
-      border: none;
-      cursor: pointer;
-      &:focus {
-        @include focusBorder;
-      }
-      @at-root .Horde .search-bar button {
-        background-color: $clr-horde;
-      }
-      @at-root .Alliance .search-bar button {
-        background-color: $clr-alliance;
-      }
-    }
-    & + small {
-      color: $clr-text-lesser;
-      display: block;
-      margin-top: 0.5rem;
-      .error {
-        color: red;
+      & + small {
+        color: $clr-text-lesser;
+        display: block;
+        margin-top: 0.5rem;
       }
     }
   }
   h1 {
+    margin-top: 0;
+    text-transform: capitalize;
     .Horde {
       color: $clr-horde;
     }
     .Alliance {
       color: $clr-alliance;
-    }
-    em {
-      font-style: normal;
-      margin-left: 0.25rem;
     }
   }
   h2 {
@@ -181,6 +187,7 @@ body {
     }
   }
   .characters {
+    min-width: 75%;
     margin: 1rem 0 0;
     ul {
       margin: 0;
@@ -237,6 +244,44 @@ body {
             color: $clr-demon-hunter;
           }
         }
+      }
+    }
+    .character {
+      $cols: 10rem 10rem auto 6rem;
+      &-list {
+        border: 1px $clr-border-dark solid;
+        border-bottom: none;
+        &-heading {
+          width: 100%;
+          display: grid;
+          grid-template-columns: $cols;
+          padding: 0.75rem 1rem;
+          background-color: $clr-bg;
+          cursor: pointer;
+          &-best-runs {
+            text-align: center;
+          }
+          &-score {
+            text-align: right;
+          }
+        }
+      }
+      &-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: $cols;
+        padding: 0.75rem 1rem;
+        background-color: $clr-bg-light-shade;
+        border-bottom: 1px $clr-border-dark solid;
+        &:nth-child(2n + 1) {
+          background-color: $clr-bg-lighter-shade;
+        }
+      }
+      &-best-runs {
+        text-align: center;
+      }
+      &-score {
+        text-align: right;
       }
     }
   }

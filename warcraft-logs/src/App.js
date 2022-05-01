@@ -1,7 +1,6 @@
 import React from 'react';
-import { CharacterProvider } from './contexts/CharacterProvider';
+import { DataProvider } from './context/DataProvider';
 import { SearchBar } from './components/SearchBar';
-import { FilterBar } from './components/FilterBar';
 import { Characters } from './components/Characters';
 import './App.scss';
 
@@ -9,11 +8,10 @@ const App = () => {
   console.count('appRender: ');
 
   return (
-    <CharacterProvider>
+    <DataProvider>
       <SearchBar />
-      <FilterBar />
       <Characters />
-    </CharacterProvider>
+    </DataProvider>
   );
 };
 

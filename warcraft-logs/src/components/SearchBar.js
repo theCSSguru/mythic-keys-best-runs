@@ -1,38 +1,40 @@
 import React, { useContext } from 'react';
-import { CharacterContext } from '../contexts/CharacterProvider';
+import { DataContext } from '../context/DataProvider';
 import { urlFriendly } from '../Helpers';
 
 export const SearchBar = () => {
   console.count('searchBarRender: ');
 
-  const { data, loading, loaded, error, serverName, setServerName, guildName, setGuildName } =
-    useContext(CharacterContext);
-
-  const maxLevelOnly = data.members.filter(member => member.character.level === 60);
+  const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
 
   const handleCharacterSearch = e => {
     e.preventDefault();
-    const serverNameValue = e.target.serverName.value;
-    const guildNameValue = e.target.guildName.value;
-    setServerName(urlFriendly(serverNameValue));
-    setGuildName(urlFriendly(guildNameValue));
+    const realmNameValue = urlFriendly(e.target.realmName.value);
+    const guildNameValue = urlFriendly(e.target.guildName.value);
+    setGuild({ name: guildNameValue, realm: { name: realmNameValue }, faction: { name: guild.faction.name } });
   };
 
   const messages = () => {
     if (error) {
       return <em className='error'> - Error: {error.message}</em>;
     } else if (loading) {
-      return <em> - Loading...</em>;
+      return <em className='loading'> - Loading...</em>;
     } else if (loaded) {
-      return <em> - Loaded {maxLevelOnly.length} Level 60 Characters</em>;
+      return <em> - Loaded {characters.length} Level 60 Characters</em>;
     }
   };
 
   return (
     <div className='search-bar'>
       <form onSubmit={handleCharacterSearch}>
-        <input defaultValue={serverName} type='search' name='serverName' id='serverName' placeholder='Server Name' />
-        <input defaultValue={guildName} type='search' name='guildName' id='guildName' placeholder='Guild Name' />
+        <input
+          defaultValue={guild.realm.name}
+          type='search'
+          name='realmName'
+          id='realmName'
+          placeholder='Server Name'
+        />
+        <input defaultValue={guild.name} type='search' name='guildName' id='guildName' placeholder='Guild Name' />
         <button name='search-button' id='search-button'>
           Search
         </button>
