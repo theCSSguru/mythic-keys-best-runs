@@ -79,9 +79,7 @@ export const Characters = () => {
               <div className='character-class'>{wowClassNames(member.character.playable_class.id)}</div>
               <div className='character-name'>
                 <a
-                  href={`https://worldofwarcraft.com/en-us/character/us/${urlFriendly(guild.realm.name)}/${
-                    member.character.name
-                  }`}
+                  href={`https://worldofwarcraft.com/en-us/character/us/${member.character.realm.slug}/${member.character.name}`}
                   target='_blank'
                   rel='noreferrer'
                   data-wow-class={wowClassNames(member.character.playable_class.id)}

@@ -92,6 +92,10 @@ export const DataProvider = ({ children }) => {
           };
         });
 
+        // ***************** TOTEN SAID LOOK INTO REDUCERS FOR THE ABOBE CODE ********************* //
+        // ***************** TOTEN SAID LOOK INTO REDUCERS FOR THE ABOBE CODE ********************* //
+        // ***************** TOTEN SAID LOOK INTO REDUCERS FOR THE ABOBE CODE ********************* //
+
         // const characterDataFull = characterDataMap.map(item => {
         //   return {
         //     class_icon: classIconData
@@ -104,7 +108,7 @@ export const DataProvider = ({ children }) => {
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
         console.clear(); // Clears 404 errors
-
+        console.log(characterData);
         setCharacters(characterData);
         setError(null);
         setLoaded(true);
