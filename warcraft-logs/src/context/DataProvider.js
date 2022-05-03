@@ -34,7 +34,7 @@ export const DataProvider = ({ children }) => {
         const rosterGet = await axios.get(rosterUrl);
         const rosterMaxCharacterLevel = rosterGet.data.members
           .filter(member => member.character.level === 60)
-          .slice(0, 17);
+          .slice(0, 18);
 
         // Set Guild Information
         setGuild({
@@ -105,7 +105,9 @@ export const DataProvider = ({ children }) => {
 
         const filterBestRun = (a, b) => {
           const dungeon = b;
-          return a.best_runs.filter(b => b.short_name === dungeon).sort((c, d) => (d.level > c.level ? 1 : -1))[0];
+          return (
+            a.best_runs.filter(b => b.short_name === dungeon).sort((c, d) => (d.level > c.level ? 1 : -1))[0] || 'null'
+          );
         };
 
         const mythicKeys = characterDataMatchStatus.map(a => {
