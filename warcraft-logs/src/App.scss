@@ -8,6 +8,7 @@ $clr-alliance: #69f;
 $clr-bg-light-shade: #292b33;
 $clr-bg-lighter-shade: #36373f;
 $clr-border-dark: #111111;
+$clr-border-light: #666666;
 
 // WoW - Class Colors
 $clr-warrior: #c69b6d;
@@ -270,11 +271,21 @@ body {
         width: 100%;
         display: grid;
         grid-template-columns: $cols;
-        padding: 0.75rem 1rem;
+        padding: 0.5rem 0.75rem;
         background-color: $clr-bg-light-shade;
         border-bottom: 1px $clr-border-dark solid;
+        align-items: center;
         &:nth-child(2n + 1) {
           background-color: $clr-bg-lighter-shade;
+        }
+      }
+      &-class {
+        img {
+          display: block;
+          width: 2rem;
+          height: 2rem;
+          border: 1px $clr-border-light solid;
+          border-radius: 2px;
         }
       }
       &-best-runs {
@@ -282,6 +293,40 @@ body {
       }
       &-score {
         text-align: right;
+      }
+    }
+  }
+  .mythics {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0.25rem;
+    .mythic {
+      &-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        border: 1px $clr-border-light solid;
+        border-radius: 2px;
+        line-height: 1.25;
+        padding: 0.25rem;
+        &[data-in-time='false'] {
+          opacity: 0.5;
+        }
+        &[data-affix='Tyrannical'] {
+          border-color: green;
+        }
+        &[data-affix='Fortified'] {
+          border-color: blue;
+        }
+      }
+      &-number {
+        font-size: 0.75rem;
+      }
+      &-name {
+        font-size: 0.5625rem;
+        text-transform: uppercase;
       }
     }
   }

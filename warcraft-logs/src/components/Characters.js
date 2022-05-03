@@ -1,11 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { DataContext } from '../context/DataProvider';
-import { urlFriendly, wowClassNames } from '../Helpers';
 
 export const Characters = () => {
   console.count('charactersRender: ');
 
-  const { guild, characters, setCharacters, loading, loaded, error } = useContext(DataContext);
+  const { characters, setCharacters, loading, loaded, error } = useContext(DataContext);
 
   const [sortName, setSortName] = useState('ASC');
   const [sortScore, setSortScore] = useState('ASC');
@@ -13,12 +12,12 @@ export const Characters = () => {
 
   const sortNames = () => {
     if (sortName === 'DESC') {
-      const sortNamesDesc = [...characters].sort((a, b) => (b.character.name > a.character.name ? 1 : -1));
+      const sortNamesDesc = [...characters].sort((a, b) => (b.name > a.name ? 1 : -1));
       setSortName('ASC');
       setCharacters(sortNamesDesc);
     }
     if (sortName === 'ASC') {
-      const sortNamesAsc = [...characters].sort((a, b) => (b.character.name < a.character.name ? 1 : -1));
+      const sortNamesAsc = [...characters].sort((a, b) => (b.name < a.name ? 1 : -1));
       setSortName('DESC');
       setCharacters(sortNamesAsc);
     }
@@ -39,16 +38,12 @@ export const Characters = () => {
 
   const sortClasses = () => {
     if (sortClass === 'DESC') {
-      const sortClassDesc = [...characters].sort((a, b) =>
-        b.character.playable_class.id > a.character.playable_class.id ? 1 : -1
-      );
+      const sortClassDesc = [...characters].sort((a, b) => (b.class.id > a.class.id ? 1 : -1));
       setSortClass('ASC');
       setCharacters(sortClassDesc);
     }
     if (sortClass === 'ASC') {
-      const sortClassAsc = [...characters].sort((a, b) =>
-        b.character.playable_class.id < a.character.playable_class.id ? 1 : -1
-      );
+      const sortClassAsc = [...characters].sort((a, b) => (b.class.id < a.class.id ? 1 : -1));
       setSortClass('DESC');
       setCharacters(sortClassAsc);
     }
@@ -76,23 +71,40 @@ export const Characters = () => {
         <ul className='character-list'>
           {characters.map((member, index) => (
             <li className='character-row' key={index}>
-              <div className='character-class'>{wowClassNames(member.character.playable_class.id)}</div>
+              <div className='character-class'>
+                <img src={member.class.icon} alt={`${member.class.name} icon for ${member.name}`} />
+              </div>
               <div className='character-name'>
                 <a
-                  href={`https://worldofwarcraft.com/en-us/character/us/${member.character.realm.slug}/${member.character.name}`}
+                  href={`https://worldofwarcraft.com/en-us/character/us/${member.realm.slug}/${member.name}`}
                   target='_blank'
                   rel='noreferrer'
-                  data-wow-class={wowClassNames(member.character.playable_class.id)}
+                  data-wow-class={member.class.name}
                 >
-                  {member.character.name}
+                  {member.name}
                 </a>
               </div>
-              <div className='character-best-runs'>best runs</div>
+              <div className='character-best-runs'>
+                <div className='mythics'>
+                  {member.best_runs.map((run, ind) => (
+                    <div
+                      className='mythic-block'
+                      data-short-name={run.short_name}
+                      data-affix={run.affix}
+                      data-in-time={run.in_time}
+                      key={ind}
+                    >
+                      <div className='mythic-number'>{run.level}</div>
+                      <div className='mythic-name'>{run.short_name}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className='character-score'>
                 <a
-                  href={`https://raider.io/characters/us/${urlFriendly(guild.realm.name)}/${urlFriendly(
-                    member.character.name
-                  )}`}
+                  href={`https://raider.io/characters/us/${member.realm.slug}/${member.name}`}
+                  target='_blank'
+                  rel='noreferrer'
                   style={{
                     color: `rgba(${member.mythic_rating.color.r}, ${member.mythic_rating.color.g}, ${member.mythic_rating.color.b}, 1)`
                   }}

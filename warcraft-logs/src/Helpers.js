@@ -32,3 +32,30 @@ export const wowClassNames = id => {
       return null;
   }
 };
+
+export const wowDungeonShortName = id => {
+  switch (id) {
+    case 377:
+      return 'dos';
+    case 392:
+      return 'gmbt';
+    case 378:
+      return 'hoa';
+    case 375:
+      return 'mists';
+    case 376:
+      return 'nw';
+    case 379:
+      return 'pf';
+    case 380:
+      return 'sd';
+    case 381:
+      return 'soa';
+    case 391:
+      return 'strt';
+    case 382:
+      return 'top';
+    default:
+      return null;
+  }
+};

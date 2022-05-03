@@ -1,14 +1,16 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { urlFriendly } from '../Helpers';
+import { urlFriendly, wowClassNames, wowDungeonShortName } from '../Helpers';
 
 export const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
   const [guild, setGuild] = useState({
     name: 'No Thanks',
+    slug: 'no-thanks',
     realm: {
-      name: 'Firetree'
+      name: 'Firetree',
+      slug: 'firetree'
     },
     faction: {
       name: 'Horde'
@@ -28,19 +30,19 @@ export const DataProvider = ({ children }) => {
         const commonAPIKey = `?namespace=profile-us&locale=en_US&access_token=${process.env.REACT_APP_API_KEY}`;
 
         // Roster Url
-        const rosterUrl = `${commonDataUrl}/guild/${urlFriendly(guild.realm.name)}/${urlFriendly(
-          guild.name
-        )}/roster${commonAPIKey}`;
+        const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
         const rosterGet = await axios.get(rosterUrl);
         const rosterMaxCharacterLevel = rosterGet.data.members
           .filter(member => member.character.level === 60)
-          .slice(0, 25);
+          .slice(0, 17);
 
         // Set Guild Information
         setGuild({
           name: rosterGet.data.guild.name,
+          slug: urlFriendly(rosterGet.data.guild.name),
           realm: {
-            name: rosterGet.data.guild.realm.name
+            name: rosterGet.data.guild.realm.name,
+            slug: urlFriendly(rosterGet.data.guild.realm.name)
           },
           faction: {
             name: rosterGet.data.guild.faction.name
@@ -67,48 +69,92 @@ export const DataProvider = ({ children }) => {
               })
           )
         );
-        const characterFilterStatus = mythicUrlGet.filter(member => member.status === 200);
+        const mythicFilterStatus = mythicUrlGet.filter(member => member.status === 200).map(member => member.data);
 
         // Get Class Icon Image URLs
-        // const classIconAPIUrl = `${commonDataUrl}/search/media?namespace=static-us&tags=playable-class&orderby=id&_page=1&access_token=${process.env.REACT_APP_API_KEY}`;
-        // const classIconAPIUrlGet = await axios.get(classIconAPIUrl);
-        // const classIconData = classIconAPIUrlGet.data.results.map(item => {
-        //   return {
-        //     class: {
-        //       id: item.data.id,
-        //       icon: item.data.assets[0].value
-        //     }
-        //   };
-        // });
-
-        const characterDataMap = characterFilterStatus.map(member => {
+        const classIconAPIUrl = `${commonDataUrl}/search/media?namespace=static-us&tags=playable-class&orderby=id&_page=1&access_token=${process.env.REACT_APP_API_KEY}`;
+        const classIconAPIUrlGet = await axios.get(classIconAPIUrl);
+        const classIconData = classIconAPIUrlGet.data.results.map(item => {
           return {
-            best_runs: member.data.best_runs,
-            mythic_rating: member.data.mythic_rating,
+            class: {
+              id: item.data.id,
+              icon: item.data.assets[0].value
+            }
+          };
+        });
+
+        const characterDataMatchStatus = mythicFilterStatus.map(member => {
+          return {
+            best_runs: member.best_runs.map(a => {
+              return {
+                id: a.dungeon.id,
+                name: a.dungeon.name,
+                short_name: wowDungeonShortName(a.dungeon.id),
+                in_time: a.is_completed_within_time,
+                level: a.keystone_level,
+                affix: a.keystone_affixes[0].name
+              };
+            }),
+            mythic_rating: member.mythic_rating,
             character: rosterMaxCharacterLevel
-              .map(rosterName => rosterName.character.name === member.data.character.name && rosterName.character)
+              .map(rosterName => rosterName.character.name === member.character.name && rosterName.character)
               .filter(a => a !== false)
               .shift()
           };
         });
 
-        // ***************** TOTEN SAID LOOK INTO REDUCERS FOR THE ABOBE CODE ********************* //
-        // ***************** TOTEN SAID LOOK INTO REDUCERS FOR THE ABOBE CODE ********************* //
-        // ***************** TOTEN SAID LOOK INTO REDUCERS FOR THE ABOBE CODE ********************* //
+        const filterBestRun = (a, b) => {
+          const dungeon = b;
+          return a.best_runs.filter(b => b.short_name === dungeon).sort((c, d) => (d.level > c.level ? 1 : -1))[0];
+        };
 
-        // const characterDataFull = characterDataMap.map(item => {
-        //   return {
-        //     class_icon: classIconData
-        //       .map(a => a.class.id === item.character.playable_class.id && a.class.icon)
-        //       .filter(a => a !== false)
-        //   };
-        // });
+        const mythicKeys = characterDataMatchStatus.map(a => {
+          return {
+            id: a.character.id,
+            dungeons: [
+              filterBestRun(a, 'dos'),
+              filterBestRun(a, 'gmbt'),
+              filterBestRun(a, 'hoa'),
+              filterBestRun(a, 'mists'),
+              filterBestRun(a, 'nw'),
+              filterBestRun(a, 'pf'),
+              filterBestRun(a, 'sd'),
+              filterBestRun(a, 'soa'),
+              filterBestRun(a, 'strt'),
+              filterBestRun(a, 'top')
+            ]
+          };
+        });
 
-        const characterData = [...characterDataMap].sort((a, b) =>
+        const characterDataCleanUp = characterDataMatchStatus.map(member => {
+          return {
+            id: member.character.id,
+            name: member.character.name,
+            class: {
+              id: member.character.playable_class.id,
+              name: wowClassNames(member.character.playable_class.id),
+              icon: classIconData
+                .map(a => a.class.id === member.character.playable_class.id && a.class.icon)
+                .filter(a => a !== false)
+                .shift()
+            },
+            realm: {
+              slug: member.character.realm.slug
+            },
+            best_runs: mythicKeys
+              .map(a => a.id === member.character.id && a.dungeons)
+              .filter(a => a !== false)
+              .shift(),
+            mythic_rating: member.mythic_rating
+          };
+        });
+
+        const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
         console.clear(); // Clears 404 errors
         console.log(characterData);
+
         setCharacters(characterData);
         setError(null);
         setLoaded(true);
@@ -120,7 +166,7 @@ export const DataProvider = ({ children }) => {
       }
     };
     getData();
-  }, [guild.name, guild.realm.name, guild.faction.name]);
+  }, [guild.slug, guild.realm.slug, guild.faction.name]);
 
   return (
     <DataContext.Provider
