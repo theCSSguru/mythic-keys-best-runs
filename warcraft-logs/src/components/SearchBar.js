@@ -11,7 +11,12 @@ export const SearchBar = () => {
     e.preventDefault();
     const realmNameValue = urlFriendly(e.target.realmName.value);
     const guildNameValue = urlFriendly(e.target.guildName.value);
-    setGuild({ name: guildNameValue, realm: { name: realmNameValue }, faction: { name: guild.faction.name } });
+    setGuild({
+      name: guildNameValue,
+      slug: guildNameValue,
+      realm: { name: realmNameValue, slug: realmNameValue },
+      faction: { name: guild.faction.name }
+    });
   };
 
   const messages = () => {
