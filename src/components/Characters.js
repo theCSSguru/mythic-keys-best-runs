@@ -92,6 +92,7 @@ export const Characters = () => {
                       data-short-name={run.short_name}
                       data-affix={run.affix}
                       data-in-time={run.in_time}
+                      title={run.affix}
                       key={ind}
                     >
                       <div className='mythic-number'>{run.level}</div>
