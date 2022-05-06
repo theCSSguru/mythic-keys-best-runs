@@ -5,15 +5,18 @@ export const Characters = () => {
   const {
     characters,
     setCharacters,
+    initialCharacters,
     loading,
     error,
     sortClass,
     sortName,
     sortScore,
     sortedClass,
+    sortedClassAll,
     sortedName,
     sortedScore,
     setSortClass,
+    setSortedClassAll,
     setSortName,
     setSortScore,
     setSortedClass,
@@ -75,6 +78,21 @@ export const Characters = () => {
     setSortedScore(true);
   };
 
+  const handleClassFilter = e => {
+    const dataClassId = parseInt(e.target.getAttribute('data-class-id'));
+    const filterByClass = [...characters].filter(member => member.class.id === dataClassId);
+    setSortedClassAll(true);
+    setCharacters(filterByClass);
+  };
+
+  const handleClassShowAll = e => {
+    setSortedClass(false);
+    setSortedName(false);
+    setSortedScore(true);
+    setSortedClassAll(false);
+    setCharacters(initialCharacters);
+  };
+
   if (error) {
     return <em className='error'> - Error: {error.message}</em>;
   } else if (loading) {
@@ -85,13 +103,11 @@ export const Characters = () => {
     return (
       <div className='characters'>
         <div className='character-list-heading'>
-          <div
-            className='character-list-heading-class'
-            data-sorted={sortedClass}
-            data-sort={sortClass}
-            onClick={sortClasses}
-          >
-            Class
+          <div className='character-list-heading-class' data-sorted={sortedClass} data-sort={sortClass}>
+            <span onClick={sortClasses}>Class</span>
+            <span className='all' data-sorted={sortedClassAll} onClick={handleClassShowAll}>
+              {` - All`}
+            </span>
           </div>
           <div
             className='character-list-heading-name'
@@ -115,7 +131,13 @@ export const Characters = () => {
           {characters.map((member, index) => (
             <li className='character-row' key={index}>
               <div className='character-class'>
-                <img src={member.class.icon} alt={`${member.class.name} icon for ${member.name}`} />
+                <img
+                  src={member.class.icon}
+                  alt={`${member.class.name} icon for ${member.name}`}
+                  title={`Filter by ${member.class.name}`}
+                  data-class-id={member.class.id}
+                  onClick={handleClassFilter}
+                />
               </div>
               <div className='character-name'>
                 <a

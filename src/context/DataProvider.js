@@ -17,6 +17,7 @@ export const DataProvider = ({ children }) => {
     }
   });
   const [characters, setCharacters] = useState();
+  const [initialCharacters, setInitialCharacters] = useState();
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
@@ -25,6 +26,7 @@ export const DataProvider = ({ children }) => {
   const [sortName, setSortName] = useState('DEFAULT');
   const [sortScore, setSortScore] = useState('DESC');
   const [sortedClass, setSortedClass] = useState(false);
+  const [sortedClassAll, setSortedClassAll] = useState(false);
   const [sortedName, setSortedName] = useState(false);
   const [sortedScore, setSortedScore] = useState(true);
 
@@ -42,7 +44,7 @@ export const DataProvider = ({ children }) => {
         const rosterGet = await axios.get(rosterUrl);
         const rosterMaxCharacterLevel = rosterGet.data.members
           .filter(member => member.character.level === 60)
-          .slice(0, 25);
+          .slice(0, 50);
 
         // Set Guild Information
         setGuild({
@@ -163,13 +165,16 @@ export const DataProvider = ({ children }) => {
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
         console.clear(); // Clears 404 errors
+        console.log(characterData);
 
         // Loads Characters
         setCharacters(characterData);
+        setInitialCharacters(characterData);
         setError(null);
         setLoaded(true);
         // Resets Sort by Score
         setSortedClass(false);
+        setSortedClassAll(false);
         setSortedName(false);
         setSortedScore(true);
       } catch (err) {
@@ -189,6 +194,7 @@ export const DataProvider = ({ children }) => {
         setGuild,
         characters,
         setCharacters,
+        initialCharacters,
         loading,
         loaded,
         error,
@@ -196,9 +202,11 @@ export const DataProvider = ({ children }) => {
         sortName,
         sortScore,
         sortedClass,
+        sortedClassAll,
         sortedName,
         sortedScore,
         setSortClass,
+        setSortedClassAll,
         setSortName,
         setSortScore,
         setSortedClass,
