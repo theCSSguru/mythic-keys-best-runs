@@ -327,7 +327,6 @@ body {
         background-color: rgba(0, 0, 0, 0.35);
         &[data-in-time='false'] {
           opacity: 0.5;
-          border-color: red !important;
         }
         &[data-affix='Tyrannical'] {
           border-color: green;
