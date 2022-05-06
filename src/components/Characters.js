@@ -4,67 +4,102 @@ import { DataContext } from '../context/DataProvider';
 export const Characters = () => {
   console.count('charactersRender: ');
 
-  const { characters, setCharacters, loading, loaded, error } = useContext(DataContext);
+  const { characters, setCharacters, loading, error } = useContext(DataContext);
 
-  const [sortName, setSortName] = useState('ASC');
-  const [sortScore, setSortScore] = useState('ASC');
-  const [sortClass, setSortClass] = useState('ASC');
+  const [sortClass, setSortClass] = useState('DEFAULT');
+  const [sortName, setSortName] = useState('DEFAULT');
+  const [sortScore, setSortScore] = useState('DESC');
+  const [sortedClass, setSortedClass] = useState(false);
+  const [sortedName, setSortedName] = useState(false);
+  const [sortedScore, setSortedScore] = useState(true);
 
   const sortNames = () => {
-    if (sortName === 'DESC') {
-      const sortNamesDesc = [...characters].sort((a, b) => (b.name > a.name ? 1 : -1));
+    if (sortName === 'DESC' || sortName === 'DEFAULT') {
+      // If DESC then make the next click ASC:
+      const asc = [...characters].sort((a, b) => (b.name < a.name ? 1 : -1));
       setSortName('ASC');
-      setCharacters(sortNamesDesc);
+      setCharacters(asc);
     }
     if (sortName === 'ASC') {
-      const sortNamesAsc = [...characters].sort((a, b) => (b.name < a.name ? 1 : -1));
+      // If ASC then make the next click DESC:
+      const desc = [...characters].sort((a, b) => (b.name > a.name ? 1 : -1));
       setSortName('DESC');
-      setCharacters(sortNamesAsc);
+      setCharacters(desc);
     }
+    setSortedClass(false);
+    setSortedName(true);
+    setSortedScore(false);
   };
 
   const sortScores = () => {
     if (sortScore === 'DESC') {
-      const sortScoresDesc = [...characters].sort((a, b) => (b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1));
+      // If DESC then make the next click ASC:
+      const asc = [...characters].sort((a, b) => (b.mythic_rating.rating < a.mythic_rating.rating ? 1 : -1));
       setSortScore('ASC');
-      setCharacters(sortScoresDesc);
+      setCharacters(asc);
     }
     if (sortScore === 'ASC') {
-      const sortScoresAsc = [...characters].sort((a, b) => (b.mythic_rating.rating < a.mythic_rating.rating ? 1 : -1));
+      // If ASC then make the next click DESC:
+      const desc = [...characters].sort((a, b) => (b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1));
       setSortScore('DESC');
-      setCharacters(sortScoresAsc);
+      setCharacters(desc);
     }
+    setSortedClass(false);
+    setSortedName(false);
+    setSortedScore(true);
   };
 
   const sortClasses = () => {
-    if (sortClass === 'DESC') {
-      const sortClassDesc = [...characters].sort((a, b) => (b.class.id > a.class.id ? 1 : -1));
+    if (sortClass === 'DESC' || sortName === 'DEFAULT') {
+      // If DESC then make the next click ASC:
+      const asc = [...characters].sort((a, b) => (b.class.id > a.class.id ? 1 : -1));
       setSortClass('ASC');
-      setCharacters(sortClassDesc);
+      setCharacters(asc);
     }
     if (sortClass === 'ASC') {
-      const sortClassAsc = [...characters].sort((a, b) => (b.class.id < a.class.id ? 1 : -1));
+      // If ASC then make the next click DESC:
+      const desc = [...characters].sort((a, b) => (b.class.id < a.class.id ? 1 : -1));
       setSortClass('DESC');
-      setCharacters(sortClassAsc);
+      setCharacters(desc);
     }
+    setSortedClass(true);
+    setSortedName(false);
+    setSortedScore(false);
   };
 
   if (error) {
     return <em className='error'> - Error: {error.message}</em>;
   } else if (loading) {
     return <em className='loading'>Loading Characters...</em>;
-  } else if (loaded) {
+  } else if (characters.length === 0) {
+    return <div className='characters'>There are no level 60's in this guild</div>;
+  } else {
     return (
       <div className='characters'>
         <div className='character-list-heading'>
-          <div className='character-list-heading-class' onClick={sortClasses}>
+          <div
+            className='character-list-heading-class'
+            data-sorted={sortedClass}
+            data-sort={sortClass}
+            onClick={sortClasses}
+          >
             Class
           </div>
-          <div className='character-list-heading-name' onClick={sortNames}>
+          <div
+            className='character-list-heading-name'
+            data-sorted={sortedName}
+            data-sort={sortName}
+            onClick={sortNames}
+          >
             Name
           </div>
           <div className='character-list-heading-best-runs'>Best Runs</div>
-          <div className='character-list-heading-score' onClick={sortScores}>
+          <div
+            className='character-list-heading-score'
+            data-sorted={sortedScore}
+            data-sort={sortScore}
+            onClick={sortScores}
+          >
             M+ Score
           </div>
         </div>
@@ -92,7 +127,11 @@ export const Characters = () => {
                       data-short-name={run.short_name}
                       data-affix={run.affix}
                       data-in-time={run.in_time}
-                      title={run.affix}
+                      {...(run.short_name !== undefined
+                        ? run.in_time
+                          ? { title: run.affix }
+                          : { title: `${run.affix} not timed` }
+                        : undefined)}
                       key={ind}
                     >
                       <div className='mythic-number'>{run.level}</div>
@@ -118,7 +157,5 @@ export const Characters = () => {
         </ul>
       </div>
     );
-  } else {
-    return <div className='characters'>There are no level 60's in this guild</div>;
   }
 };

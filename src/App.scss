@@ -188,7 +188,6 @@ body {
     }
   }
   .characters {
-    min-width: 75%;
     margin: 1rem 0 0;
     ul {
       margin: 0;
@@ -248,30 +247,44 @@ body {
       }
     }
     .character {
-      $cols: 10rem 10rem auto 6rem;
+      $gridTemplateColums: 8rem 12rem auto 8rem;
+      $gridRowsPadding: 0.75rem 1rem;
       &-list {
         border: 1px $clr-border-dark solid;
         border-bottom: none;
         &-heading {
           width: 100%;
           display: grid;
-          grid-template-columns: $cols;
-          padding: 0.75rem 1rem;
+          grid-template-columns: $gridTemplateColums;
           background-color: $clr-bg;
-          cursor: pointer;
+          &-class,
+          &-name,
+          &-best-runs,
+          &-score {
+            padding: $gridRowsPadding;
+            position: relative;
+            cursor: pointer;
+          }
           &-best-runs {
             text-align: center;
+            cursor: default;
           }
           &-score {
             text-align: right;
+          }
+          [data-sorted='true'][data-sort='ASC'] {
+            box-shadow: inset $clr-border-light 0 6px 0;
+          }
+          [data-sorted='true'][data-sort='DESC'] {
+            box-shadow: inset $clr-border-light 0 -6px 0;
           }
         }
       }
       &-row {
         width: 100%;
         display: grid;
-        grid-template-columns: $cols;
-        padding: 0.5rem 0.75rem;
+        grid-template-columns: $gridTemplateColums;
+        padding: $gridRowsPadding;
         background-color: $clr-bg-light-shade;
         border-bottom: 1px $clr-border-dark solid;
         align-items: center;

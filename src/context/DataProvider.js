@@ -22,6 +22,7 @@ export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
     const getData = async () => {
       try {
         // Common Urls
@@ -32,7 +33,9 @@ export const DataProvider = ({ children }) => {
         // Roster Url
         const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
         const rosterGet = await axios.get(rosterUrl);
-        const rosterMaxCharacterLevel = rosterGet.data.members.filter(member => member.character.level === 60);
+        const rosterMaxCharacterLevel = rosterGet.data.members
+          .filter(member => member.character.level === 60)
+          .slice(0, 50);
 
         // Set Guild Information
         setGuild({
@@ -153,7 +156,6 @@ export const DataProvider = ({ children }) => {
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
         console.clear(); // Clears 404 errors
-        console.log(characterData);
 
         setCharacters(characterData);
         setError(null);
