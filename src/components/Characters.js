@@ -105,7 +105,7 @@ export const Characters = () => {
         </div>
         <ul className='character-list'>
           {characters.map((member, index) => (
-            <li className='character-row' key={index}>
+            <li className='character-row' key={index} data-character-id={member.id}>
               <div className='character-class'>
                 <img src={member.class.icon} alt={`${member.class.name} icon for ${member.name}`} />
               </div>
@@ -149,7 +149,7 @@ export const Characters = () => {
                     color: `rgba(${member.mythic_rating.color.r}, ${member.mythic_rating.color.g}, ${member.mythic_rating.color.b}, 1)`
                   }}
                 >
-                  {Math.trunc(member.mythic_rating.rating)}
+                  {member.mythic_rating.rating.toFixed(1)}
                 </a>
               </div>
             </li>
