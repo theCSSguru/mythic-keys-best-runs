@@ -5,8 +5,6 @@ import { Characters } from './components/Characters';
 import './App.scss';
 
 const App = () => {
-  console.count('appRender: ');
-
   return (
     <DataProvider>
       <SearchBar />

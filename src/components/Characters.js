@@ -1,17 +1,43 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { DataContext } from '../context/DataProvider';
 
 export const Characters = () => {
-  console.count('charactersRender: ');
+  const {
+    characters,
+    setCharacters,
+    loading,
+    error,
+    sortClass,
+    sortName,
+    sortScore,
+    sortedClass,
+    sortedName,
+    sortedScore,
+    setSortClass,
+    setSortName,
+    setSortScore,
+    setSortedClass,
+    setSortedName,
+    setSortedScore
+  } = useContext(DataContext);
 
-  const { characters, setCharacters, loading, error } = useContext(DataContext);
-
-  const [sortClass, setSortClass] = useState('DEFAULT');
-  const [sortName, setSortName] = useState('DEFAULT');
-  const [sortScore, setSortScore] = useState('DESC');
-  const [sortedClass, setSortedClass] = useState(false);
-  const [sortedName, setSortedName] = useState(false);
-  const [sortedScore, setSortedScore] = useState(true);
+  const sortClasses = () => {
+    if (sortClass === 'DESC' || sortClass === 'DEFAULT') {
+      // If DESC then make the next click ASC:
+      const asc = [...characters].sort((a, b) => (b.class.id > a.class.id ? 1 : -1));
+      setSortClass('ASC');
+      setCharacters(asc);
+    }
+    if (sortClass === 'ASC') {
+      // If ASC then make the next click DESC:
+      const desc = [...characters].sort((a, b) => (b.class.id < a.class.id ? 1 : -1));
+      setSortClass('DESC');
+      setCharacters(desc);
+    }
+    setSortedClass(true);
+    setSortedName(false);
+    setSortedScore(false);
+  };
 
   const sortNames = () => {
     if (sortName === 'DESC' || sortName === 'DEFAULT') {
@@ -47,24 +73,6 @@ export const Characters = () => {
     setSortedClass(false);
     setSortedName(false);
     setSortedScore(true);
-  };
-
-  const sortClasses = () => {
-    if (sortClass === 'DESC' || sortName === 'DEFAULT') {
-      // If DESC then make the next click ASC:
-      const asc = [...characters].sort((a, b) => (b.class.id > a.class.id ? 1 : -1));
-      setSortClass('ASC');
-      setCharacters(asc);
-    }
-    if (sortClass === 'ASC') {
-      // If ASC then make the next click DESC:
-      const desc = [...characters].sort((a, b) => (b.class.id < a.class.id ? 1 : -1));
-      setSortClass('DESC');
-      setCharacters(desc);
-    }
-    setSortedClass(true);
-    setSortedName(false);
-    setSortedScore(false);
   };
 
   if (error) {
@@ -105,7 +113,7 @@ export const Characters = () => {
         </div>
         <ul className='character-list'>
           {characters.map((member, index) => (
-            <li className='character-row' key={index} data-character-id={member.id}>
+            <li className='character-row' key={index}>
               <div className='character-class'>
                 <img src={member.class.icon} alt={`${member.class.name} icon for ${member.name}`} />
               </div>

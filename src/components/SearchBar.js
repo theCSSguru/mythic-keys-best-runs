@@ -3,8 +3,6 @@ import { DataContext } from '../context/DataProvider';
 import { urlFriendly } from '../Helpers';
 
 export const SearchBar = () => {
-  console.count('searchBarRender: ');
-
   const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
 
   const handleCharacterSearch = e => {
@@ -14,8 +12,13 @@ export const SearchBar = () => {
     setGuild({
       name: guildNameValue,
       slug: guildNameValue,
-      realm: { name: realmNameValue, slug: realmNameValue },
-      faction: { name: guild.faction.name }
+      realm: {
+        name: realmNameValue,
+        slug: realmNameValue
+      },
+      faction: {
+        name: guild.faction.name
+      }
     });
   };
 

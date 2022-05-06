@@ -21,6 +21,13 @@ export const DataProvider = ({ children }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
 
+  const [sortClass, setSortClass] = useState('DEFAULT');
+  const [sortName, setSortName] = useState('DEFAULT');
+  const [sortScore, setSortScore] = useState('DESC');
+  const [sortedClass, setSortedClass] = useState(false);
+  const [sortedName, setSortedName] = useState(false);
+  const [sortedScore, setSortedScore] = useState(true);
+
   useEffect(() => {
     setLoading(true);
     const getData = async () => {
@@ -33,7 +40,22 @@ export const DataProvider = ({ children }) => {
         // Roster Url
         const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
         const rosterGet = await axios.get(rosterUrl);
-        const rosterMaxCharacterLevel = rosterGet.data.members.filter(member => member.character.level === 60);
+        const rosterMaxCharacterLevel = rosterGet.data.members
+          .filter(member => member.character.level === 60)
+          .slice(0, 25);
+
+        // Set Guild Information
+        setGuild({
+          name: rosterGet.data.guild.name,
+          slug: urlFriendly(rosterGet.data.guild.name),
+          realm: {
+            name: rosterGet.data.guild.realm.name,
+            slug: urlFriendly(rosterGet.data.guild.realm.name)
+          },
+          faction: {
+            name: rosterGet.data.guild.faction.name
+          }
+        });
 
         // Mythic Keystone Url for all Returned Members in the Guild
         const mythicCharacterUrls = rosterMaxCharacterLevel.map(member => {
@@ -141,12 +163,15 @@ export const DataProvider = ({ children }) => {
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
         console.clear(); // Clears 404 errors
-        // console.log(rosterMaxCharacterLevel);
-        // console.log(characterData);
 
+        // Loads Characters
         setCharacters(characterData);
         setError(null);
         setLoaded(true);
+        // Resets Sort by Score
+        setSortedClass(false);
+        setSortedName(false);
+        setSortedScore(true);
       } catch (err) {
         setLoaded(false);
         setError(err);
@@ -166,7 +191,19 @@ export const DataProvider = ({ children }) => {
         setCharacters,
         loading,
         loaded,
-        error
+        error,
+        sortClass,
+        sortName,
+        sortScore,
+        sortedClass,
+        sortedName,
+        sortedScore,
+        setSortClass,
+        setSortName,
+        setSortScore,
+        setSortedClass,
+        setSortedName,
+        setSortedScore
       }}
     >
       <div className={`wrapper ${guild.faction.name}`}>{children}</div>
