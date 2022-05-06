@@ -144,6 +144,7 @@ export const Characters = () => {
                   href={`https://worldofwarcraft.com/en-us/character/us/${member.realm.slug}/${member.name}`}
                   target='_blank'
                   rel='noreferrer'
+                  title={`View WoW Amory for ${member.name}`}
                   data-wow-class={member.class.name}
                 >
                   {member.name}
@@ -151,23 +152,27 @@ export const Characters = () => {
               </div>
               <div className='character-best-runs'>
                 <div className='mythics'>
-                  {member.best_runs.map((run, ind) => (
-                    <div
-                      className='mythic-block'
-                      data-short-name={run.short_name}
-                      data-affix={run.affix}
-                      data-in-time={run.in_time}
-                      {...(run.short_name !== undefined
-                        ? run.in_time
-                          ? { title: run.affix }
-                          : { title: `${run.affix} not timed` }
-                        : undefined)}
-                      key={ind}
-                    >
-                      <div className='mythic-number'>{run.level}</div>
-                      <div className='mythic-name'>{run.short_name}</div>
-                    </div>
-                  ))}
+                  {member.best_runs.map((run, ind) =>
+                    run !== 'null' ? (
+                      <div
+                        className='mythic-block'
+                        data-short-name={run.short_name}
+                        data-affix={run.affix}
+                        data-in-time={run.in_time}
+                        {...(run.short_name !== undefined
+                          ? run.in_time
+                            ? { title: run.affix }
+                            : { title: `${run.affix} not timed` }
+                          : undefined)}
+                        key={ind}
+                      >
+                        <div className='mythic-number'>{run.level}</div>
+                        <div className='mythic-name'>{run.short_name}</div>
+                      </div>
+                    ) : (
+                      <div className='mythic-block null'></div>
+                    )
+                  )}
                 </div>
               </div>
               <div className='character-score'>
@@ -175,6 +180,7 @@ export const Characters = () => {
                   href={`https://raider.io/characters/us/${member.realm.slug}/${member.name}`}
                   target='_blank'
                   rel='noreferrer'
+                  title={`View Raider.io for ${member.name}`}
                   style={{
                     color: `rgba(${member.mythic_rating.color.r}, ${member.mythic_rating.color.g}, ${member.mythic_rating.color.b}, 1)`
                   }}

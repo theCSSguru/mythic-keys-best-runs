@@ -5,6 +5,7 @@ import { urlFriendly, wowClassNames, wowDungeonShortName } from '../Helpers';
 export const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
+  // Guild State
   const [guild, setGuild] = useState({
     name: 'No Thanks',
     slug: 'no-thanks',
@@ -16,12 +17,17 @@ export const DataProvider = ({ children }) => {
       name: 'Horde'
     }
   });
+
+  // Character States
   const [characters, setCharacters] = useState();
   const [initialCharacters, setInitialCharacters] = useState();
+
+  // Loading and Error States
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
 
+  // Sort States
   const [sortClass, setSortClass] = useState('DEFAULT');
   const [sortName, setSortName] = useState('DEFAULT');
   const [sortScore, setSortScore] = useState('DESC');
@@ -30,6 +36,7 @@ export const DataProvider = ({ children }) => {
   const [sortedName, setSortedName] = useState(false);
   const [sortedScore, setSortedScore] = useState(true);
 
+  // Call APIs and Construct Data
   useEffect(() => {
     setLoading(true);
     const getData = async () => {
@@ -44,7 +51,7 @@ export const DataProvider = ({ children }) => {
         const rosterGet = await axios.get(rosterUrl);
         const rosterMaxCharacterLevel = rosterGet.data.members
           .filter(member => member.character.level === 60)
-          .slice(0, 50);
+          .slice(0, 25);
 
         // Set Guild Information
         setGuild({
@@ -93,25 +100,27 @@ export const DataProvider = ({ children }) => {
           };
         });
 
-        const characterDataMatchStatus = mythicFilterStatus.map(member => {
-          return {
-            best_runs: member.best_runs.map(a => {
-              return {
-                id: a.dungeon.id,
-                name: a.dungeon.name,
-                short_name: wowDungeonShortName(a.dungeon.id),
-                in_time: a.is_completed_within_time,
-                level: a.keystone_level,
-                affix: a.keystone_affixes[0].name
-              };
-            }),
-            mythic_rating: member.mythic_rating,
-            character: rosterMaxCharacterLevel
-              .map(rosterName => rosterName.character.id === member.character.id && rosterName.character)
-              .filter(a => a !== false)
-              .shift()
-          };
-        });
+        const characterDataMatchStatus = mythicFilterStatus
+          .map(member => {
+            return {
+              best_runs: member.best_runs.map(a => {
+                return {
+                  id: a.dungeon.id,
+                  name: a.dungeon.name,
+                  short_name: wowDungeonShortName(a.dungeon.id),
+                  in_time: a.is_completed_within_time,
+                  level: a.keystone_level,
+                  affix: a.keystone_affixes[0].name
+                };
+              }),
+              mythic_rating: member.mythic_rating,
+              character: rosterMaxCharacterLevel
+                .map(rosterName => rosterName.character.id === member.character.id && rosterName.character)
+                .filter(a => a !== false)
+                .shift()
+            };
+          })
+          .filter(a => a.mythic_rating.rating !== 0);
 
         const filterBestRun = (a, b) => {
           const dungeon = b;
@@ -164,8 +173,7 @@ export const DataProvider = ({ children }) => {
         const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
-        console.clear(); // Clears 404 errors
-        console.log(characterData);
+        //console.clear(); // Clears 404 errors
 
         // Loads Characters
         setCharacters(characterData);

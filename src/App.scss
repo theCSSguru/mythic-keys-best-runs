@@ -334,20 +334,25 @@ body {
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        width: 2.4rem;
+        height: 2.3rem;
         padding: 0.25rem;
         line-height: 1.25;
         text-align: center;
         border: 1px $clr-border-light solid;
         border-radius: 2px;
         background-color: rgba(0, 0, 0, 0.35);
+        &.null {
+          opacity: 0.125;
+        }
         &[data-in-time='false'] {
           opacity: 0.5;
         }
         &[data-affix='Tyrannical'] {
-          border-color: green;
+          border-color: #bc7f49;
         }
         &[data-affix='Fortified'] {
-          border-color: blue;
+          border-color: #00b3c9;
         }
       }
       &-number {
