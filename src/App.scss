@@ -1,28 +1,30 @@
 // WoW - UI Colors
-$clr-bg: #1a1c23;
-$clr-text: #ffffff;
-$clr-text-lesser: #b8b9bb;
-$clr-baby-blue: #7abfff;
-$clr-horde: #e02929;
-$clr-alliance: #69f;
-$clr-bg-light-shade: #292b33;
-$clr-bg-lighter-shade: #36373f;
-$clr-border-dark: #111111;
-$clr-border-light: #666666;
+$clr-bg: rgb(26, 28, 35);
+$clr-text: rgb(255, 255, 255);
+$clr-text-lesser: rgb(184, 184, 186);
+$clr-baby-blue: rgb(122, 191, 255);
+$clr-horde: rgb(224, 41, 41);
+$clr-alliance: rgb(102, 153, 255);
+$clr-bg-light-shade: rgb(41, 43, 51);
+$clr-bg-lighter-shade: rgb(54, 55, 63);
+$clr-border-dark: rgb(17, 17, 17);
+$clr-border-light: rgb(102, 102, 102);
+$clr-tyrannical: rgb(188, 127, 73);
+$clr-fortified: rgb(0, 179, 201);
 
 // WoW - Class Colors
-$clr-warrior: #c69b6d;
-$clr-paladin: #f48cba;
-$clr-hunter: #aad372;
-$clr-rogue: #fff468;
-$clr-priest: #ffffff;
-$clr-death-knight: #c41e3a;
-$clr-shaman: #0070dd;
-$clr-mage: #3fc7eb;
-$clr-warlock: #8788ee;
-$clr-monk: #00ff98;
-$clr-druid: #ff7c0a;
-$clr-demon-hunter: #a330c9;
+$clr-warrior: rgb(198, 155, 109);
+$clr-paladin: rgb(244, 140, 186);
+$clr-hunter: rgb(170, 211, 114);
+$clr-rogue: rgb(255, 244, 104);
+$clr-priest: rgb(255, 255, 255);
+$clr-death-knight: rgb(196, 30, 58);
+$clr-shaman: rgb(0, 112, 221);
+$clr-mage: rgb(63, 199, 235);
+$clr-warlock: rgb(135, 136, 238);
+$clr-monk: rgb(0, 255, 152);
+$clr-druid: rgb(255, 124, 10);
+$clr-demon-hunter: rgb(163, 48, 201);
 
 // Focus Border
 @mixin focusBorder {
@@ -207,41 +209,24 @@ body {
           &:focus {
             @include focusBorder;
           }
-          &[data-wow-class='Warrior'] {
-            color: $clr-warrior;
-          }
-          &[data-wow-class='Paladin'] {
-            color: $clr-paladin;
-          }
-          &[data-wow-class='Hunter'] {
-            color: $clr-hunter;
-          }
-          &[data-wow-class='Rogue'] {
-            color: $clr-rogue;
-          }
-          &[data-wow-class='Priest'] {
-            color: $clr-priest;
-          }
-          &[data-wow-class='Death Knight'] {
-            color: $clr-death-knight;
-          }
-          &[data-wow-class='Shaman'] {
-            color: $clr-shaman;
-          }
-          &[data-wow-class='Mage'] {
-            color: $clr-mage;
-          }
-          &[data-wow-class='Warlock'] {
-            color: $clr-warlock;
-          }
-          &[data-wow-class='Monk'] {
-            color: $clr-monk;
-          }
-          &[data-wow-class='Druid'] {
-            color: $clr-druid;
-          }
-          &[data-wow-class='Demon Hunter'] {
-            color: $clr-demon-hunter;
+          $wowClasses: (
+            Warrior: $clr-warrior,
+            Paladin: $clr-paladin,
+            Hunter: $clr-hunter,
+            Rogue: $clr-rogue,
+            Priest: $clr-priest,
+            Death Knight: $clr-death-knight,
+            Shaman: $clr-shaman,
+            Mage: $clr-mage,
+            Warlock: $clr-warlock,
+            Monk: $clr-monk,
+            Druid: $clr-druid,
+            Demon Hunter: $clr-demon-hunter
+          );
+          @each $wowClassName, $wowClassVariable in $wowClasses {
+            &[data-wow-class='#{$wowClassName}'] {
+              color: $wowClassVariable;
+            }
           }
         }
       }
@@ -337,22 +322,35 @@ body {
         width: 2.4rem;
         height: 2.3rem;
         padding: 0.25rem;
+        font-weight: bold;
         line-height: 1.25;
         text-align: center;
         border: 1px $clr-border-light solid;
         border-radius: 2px;
         background-color: rgba(0, 0, 0, 0.35);
+        box-shadow: inset 0 0 0 50px rgba(0, 0, 0, 0.5), 1px 1px 1px rgb(0, 0, 0, 0.5);
         &.null {
-          opacity: 0.125;
+          opacity: 0.25;
         }
         &[data-in-time='false'] {
-          opacity: 0.5;
+          box-shadow: inset 0 0 0 50px rgba(0, 0, 0, 0.9);
         }
         &[data-affix='Tyrannical'] {
-          border-color: #bc7f49;
+          border-color: $clr-tyrannical;
         }
         &[data-affix='Fortified'] {
-          border-color: #00b3c9;
+          border-color: $clr-fortified;
+        }
+        &[data-short-name] {
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
+        }
+        $dungeons: dos, gmbt, hoa, mists, nw, pf, sd, soa, strt, top;
+        @each $dungeon in $dungeons {
+          &[data-short-name='#{$dungeon}'] {
+            background-image: url('./assets/img/#{$dungeon}.jpg');
+          }
         }
       }
       &-number {

@@ -170,7 +170,7 @@ export const Characters = () => {
                         <div className='mythic-name'>{run.short_name}</div>
                       </div>
                     ) : (
-                      <div className='mythic-block null'></div>
+                      <div className='mythic-block null' key={ind}></div>
                     )
                   )}
                 </div>
