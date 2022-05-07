@@ -27,13 +27,17 @@ export const Characters = () => {
   const sortClasses = () => {
     if (sortClass === 'DESC' || sortClass === 'DEFAULT') {
       // If DESC then make the next click ASC:
-      const asc = [...characters].sort((a, b) => (b.class.id > a.class.id ? 1 : -1));
+      const asc = [...characters].sort(
+        (a, b) => b.class.id - a.class.id || b.mythic_rating.rating - a.mythic_rating.rating
+      );
       setSortClass('ASC');
       setCharacters(asc);
     }
     if (sortClass === 'ASC') {
       // If ASC then make the next click DESC:
-      const desc = [...characters].sort((a, b) => (b.class.id < a.class.id ? 1 : -1));
+      const desc = [...characters].sort(
+        (a, b) => a.class.id - b.class.id || b.mythic_rating.rating - a.mythic_rating.rating
+      );
       setSortClass('DESC');
       setCharacters(desc);
     }
