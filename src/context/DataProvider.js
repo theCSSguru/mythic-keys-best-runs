@@ -185,6 +185,7 @@ export const DataProvider = ({ children }) => {
         setSortedClassAll(false);
         setSortedName(false);
         setSortedScore(true);
+        setSortScore('DESC');
       } catch (err) {
         setLoaded(false);
         setError(err);
