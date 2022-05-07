@@ -26,7 +26,6 @@ export const Characters = () => {
 
   const sortClasses = () => {
     if (sortClass === 'DESC' || sortClass === 'DEFAULT') {
-      // If DESC then make the next click ASC:
       const asc = [...characters].sort(
         (a, b) => b.class.id - a.class.id || b.mythic_rating.rating - a.mythic_rating.rating
       );
@@ -34,7 +33,6 @@ export const Characters = () => {
       setCharacters(asc);
     }
     if (sortClass === 'ASC') {
-      // If ASC then make the next click DESC:
       const desc = [...characters].sort(
         (a, b) => a.class.id - b.class.id || b.mythic_rating.rating - a.mythic_rating.rating
       );
@@ -50,13 +48,11 @@ export const Characters = () => {
 
   const sortNames = () => {
     if (sortName === 'DESC' || sortName === 'DEFAULT') {
-      // If DESC then make the next click ASC:
       const asc = [...characters].sort((a, b) => (a.name > b.name ? 1 : -1));
       setSortName('ASC');
       setCharacters(asc);
     }
     if (sortName === 'ASC') {
-      // If ASC then make the next click DESC:
       const desc = [...characters].sort((a, b) => (a.name < b.name ? 1 : -1));
       setSortName('DESC');
       setCharacters(desc);
@@ -70,13 +66,11 @@ export const Characters = () => {
 
   const sortScores = () => {
     if (sortScore === 'DESC') {
-      // If DESC then make the next click ASC:
       const asc = [...characters].sort((a, b) => (a.mythic_rating.rating > b.mythic_rating.rating ? 1 : -1));
       setSortScore('ASC');
       setCharacters(asc);
     }
     if (sortScore === 'ASC') {
-      // If ASC then make the next click DESC:
       const desc = [...characters].sort((a, b) => (a.mythic_rating.rating < b.mythic_rating.rating ? 1 : -1));
       setSortScore('DESC');
       setCharacters(desc);
@@ -90,7 +84,13 @@ export const Characters = () => {
 
   const handleClassFilter = e => {
     const dataClassId = parseInt(e.target.getAttribute('data-class-id'));
-    const filterByClass = [...characters].filter(member => member.class.id === dataClassId);
+    const filterByClass = [...characters]
+      .filter(a => a.class.id === dataClassId)
+      .sort((a, b) => b.mythic_rating.rating - a.mythic_rating.rating);
+    setSortedClass(false);
+    setSortedName(false);
+    setSortedScore(true);
+    setSortScore('DESC');
     setSortedClassAll(true);
     setCharacters(filterByClass);
   };
