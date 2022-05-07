@@ -114,9 +114,12 @@ export const Characters = () => {
       <div className='characters'>
         <div className='character-list-heading'>
           <div className='character-list-heading-class' data-sorted={sortedClass} data-sort={sortClass}>
-            <span onClick={sortClasses}>Class</span>
-            <span className='all' data-sorted={sortedClassAll} onClick={handleClassShowAll}>
-              {` - All`}
+            <span className='character-class' data-sorted={sortedClassAll} onClick={sortClasses}>
+              Class
+            </span>
+            <span className='character-dash'>-</span>
+            <span className='character-class-all' data-sorted={sortedClassAll} onClick={handleClassShowAll}>
+              All
             </span>
           </div>
           <div

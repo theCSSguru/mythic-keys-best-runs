@@ -255,14 +255,30 @@ body {
             span {
               cursor: pointer;
             }
-            .all {
-              cursor: default;
-              pointer-events: none;
-              opacity: 0.5;
-              &[data-sorted='true'] {
+            .character {
+              &-dash {
+                padding: 0 0.25rem;
+                opacity: 0.5;
+              }
+              &-class {
                 cursor: pointer;
                 pointer-events: all;
                 opacity: 1;
+                &[data-sorted='true'] {
+                  cursor: default;
+                  pointer-events: none;
+                  opacity: 0.5;
+                }
+                &-all {
+                  cursor: default;
+                  pointer-events: none;
+                  opacity: 0.5;
+                  &[data-sorted='true'] {
+                    cursor: pointer;
+                    pointer-events: all;
+                    opacity: 1;
+                  }
+                }
               }
             }
           }
