@@ -257,9 +257,11 @@ body {
             }
             .all {
               cursor: default;
+              pointer-events: none;
               opacity: 0.5;
               &[data-sorted='true'] {
                 cursor: pointer;
+                pointer-events: all;
                 opacity: 1;
               }
             }
