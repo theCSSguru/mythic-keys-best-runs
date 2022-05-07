@@ -40,6 +40,8 @@ export const Characters = () => {
     setSortedClass(true);
     setSortedName(false);
     setSortedScore(false);
+    setSortName('DEFAULT');
+    setSortScore('ASC');
   };
 
   const sortNames = () => {
@@ -58,6 +60,8 @@ export const Characters = () => {
     setSortedClass(false);
     setSortedName(true);
     setSortedScore(false);
+    setSortClass('DEFAULT');
+    setSortScore('ASC');
   };
 
   const sortScores = () => {
@@ -76,6 +80,8 @@ export const Characters = () => {
     setSortedClass(false);
     setSortedName(false);
     setSortedScore(true);
+    setSortClass('DEFAULT');
+    setSortName('DEFAULT');
   };
 
   const handleClassFilter = e => {
