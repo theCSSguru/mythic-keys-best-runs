@@ -333,7 +333,8 @@ body {
           opacity: 0.25;
         }
         &[data-in-time='false'] {
-          box-shadow: inset 0 0 0 50px rgba(0, 0, 0, 0.9);
+          color: rgba(255, 255, 255, 0.5);
+          box-shadow: inset 0 0 0 50px rgba(0, 0, 0, 0.95);
         }
         &[data-affix='Tyrannical'] {
           border-color: $clr-tyrannical;

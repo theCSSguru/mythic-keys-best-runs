@@ -185,7 +185,7 @@ export const Characters = () => {
                     color: `rgba(${member.mythic_rating.color.r}, ${member.mythic_rating.color.g}, ${member.mythic_rating.color.b}, 1)`
                   }}
                 >
-                  {member.mythic_rating.rating.toFixed(1)}
+                  {member.mythic_rating.rating.toFixed(0)}
                 </a>
               </div>
             </li>
