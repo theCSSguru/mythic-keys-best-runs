@@ -36,6 +36,27 @@ export const DataProvider = ({ children }) => {
   const [sortedName, setSortedName] = useState(false);
   const [sortedScore, setSortedScore] = useState(true);
 
+  // Token State
+  const [token, setToken] = useState('');
+  useEffect(() => {
+    const getToken = async () => {
+      const tokenResponse = await axios.post(
+        'https://us.battle.net/oauth/token',
+        new URLSearchParams({
+          grant_type: 'client_credentials'
+        }),
+        {
+          auth: {
+            username: process.env.REACT_APP_CLIENT_ID,
+            password: process.env.REACT_APP_CLIENT_SECRET
+          }
+        }
+      );
+      setToken(tokenResponse.data.access_token);
+    };
+    getToken();
+  }, []);
+
   // Call APIs and Construct Data
   useEffect(() => {
     setLoading(true);
@@ -44,7 +65,7 @@ export const DataProvider = ({ children }) => {
         // Common Urls
         const commonDataUrl = 'https://us.api.blizzard.com/data/wow';
         const commonProfileUrl = 'https://us.api.blizzard.com/profile/wow/character';
-        const commonAPIKey = `?namespace=profile-us&locale=en_US&access_token=${process.env.REACT_APP_API_KEY}`;
+        const commonAPIKey = `?namespace=profile-us&locale=en_US&access_token=${token}`;
 
         // Roster Url
         const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
@@ -87,7 +108,7 @@ export const DataProvider = ({ children }) => {
         const mythicFilterStatus = mythicUrlGet.filter(member => member.status === 200).map(member => member.data);
 
         // Get Class Icon Image URLs
-        const classIconAPIUrl = `${commonDataUrl}/search/media?namespace=static-us&tags=playable-class&orderby=id&_page=1&access_token=${process.env.REACT_APP_API_KEY}`;
+        const classIconAPIUrl = `${commonDataUrl}/search/media?namespace=static-us&tags=playable-class&orderby=id&_page=1&access_token=${token}`;
         const classIconAPIUrlGet = await axios.get(classIconAPIUrl);
         const classIconData = classIconAPIUrlGet.data.results.map(item => {
           return {
@@ -191,8 +212,10 @@ export const DataProvider = ({ children }) => {
         setLoading(false);
       }
     };
-    getData();
-  }, [guild.slug, guild.realm.slug, guild.faction.name]);
+    if (token !== '') {
+      getData();
+    }
+  }, [token, guild.slug, guild.realm.slug, guild.faction.name]);
 
   return (
     <DataContext.Provider
