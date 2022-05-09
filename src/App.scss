@@ -118,6 +118,7 @@ body {
         border: 1px $clr-bg-lighter-shade solid;
         background-color: $clr-bg-light-shade;
         outline: none;
+        text-transform: capitalize;
         &:focus {
           @include focusBorder;
         }
@@ -145,6 +146,13 @@ body {
         }
         @at-root .wrapper.Alliance .search-bar button {
           background-color: $clr-alliance;
+        }
+        .loading {
+          display: flex;
+          justify-content: center;
+          &-dots-wrap {
+            margin-left: 0;
+          }
         }
       }
       & + small {

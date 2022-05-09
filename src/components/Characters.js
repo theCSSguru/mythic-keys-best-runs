@@ -105,7 +105,7 @@ export const Characters = () => {
   };
 
   if (error) {
-    return <em className='error'> - Error: {error.message}</em>;
+    return <em className='error'>Error: {error.message}</em>;
   } else if (loading) {
     return <Loading text='Loading Characters' />;
   } else if (characters.length === 0) {

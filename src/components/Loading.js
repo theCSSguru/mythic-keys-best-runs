@@ -4,8 +4,8 @@ export const Loading = ({ text }) => {
   return (
     <div className='loading'>
       <div className='loading-text'>{text}</div>
-      <div class='loading-dots-wrap'>
-        <div class='loading-dots'></div>
+      <div className='loading-dots-wrap'>
+        <div className='loading-dots'></div>
       </div>
     </div>
   );
