@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { DataContext } from '../context/DataProvider';
 import { urlFriendly } from '../Helpers';
+import { Loading } from './Loading';
 
 export const SearchBar = () => {
   const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
@@ -26,7 +27,7 @@ export const SearchBar = () => {
     if (error) {
       return <em className='error'> - Error: {error.message}</em>;
     } else if (loading) {
-      return <em className='loading'> - Loading...</em>;
+      return <Loading text='- Loading Characters' />;
     } else if (loaded) {
       return <em> - Loaded {characters.length} Level 60 Characters</em>;
     }

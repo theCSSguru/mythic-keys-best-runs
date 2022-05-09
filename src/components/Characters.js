@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { DataContext } from '../context/DataProvider';
+import { Loading } from './Loading';
 
 export const Characters = () => {
   const {
@@ -106,7 +107,7 @@ export const Characters = () => {
   if (error) {
     return <em className='error'> - Error: {error.message}</em>;
   } else if (loading) {
-    return <em className='loading'>Loading Characters...</em>;
+    return <Loading text='Loading Characters' />;
   } else if (characters.length === 0) {
     return <div className='characters'>There are no level 60's in this guild</div>;
   } else {
