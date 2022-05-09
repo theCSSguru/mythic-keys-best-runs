@@ -70,9 +70,7 @@ export const DataProvider = ({ children }) => {
         // Roster Url
         const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
         const rosterGet = await axios.get(rosterUrl);
-        const rosterMaxCharacterLevel = rosterGet.data.members
-          .filter(member => member.character.level === 60)
-          .slice(0, 10);
+        const rosterMaxCharacterLevel = rosterGet.data.members.filter(member => member.character.level === 60);
 
         // Set Guild Information
         setGuild({
