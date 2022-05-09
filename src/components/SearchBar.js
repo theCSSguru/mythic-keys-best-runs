@@ -5,32 +5,22 @@ import { Loading } from './Loading';
 
 export const SearchBar = () => {
   const { guild, setGuild, characters, loading, loaded, error, setError } = useContext(DataContext);
-  const [inputRealm, setInputRealm] = useState(guild.realm.name);
-  const [inputGuild, setInputGuild] = useState(guild.name);
+  const [inputRealm, setInputRealm] = useState('Firetree');
+  const [inputGuild, setInputGuild] = useState('No Thanks');
 
   const handleCharacterSearch = e => {
     e.preventDefault();
-    const realmNameValue = urlFriendly(e.target.realmName.value);
-    const guildNameValue = urlFriendly(e.target.guildName.value);
-    if (realmNameValue.length === 0 && guildNameValue.length === 0) {
-      setError({ message: 'Please enter a Realm Name and a Guild Name' });
-    } else if (realmNameValue.length === 0) {
-      setError({ message: 'Please enter a Realm Name' });
-    } else if (guildNameValue.length === 0) {
-      setError({ message: 'Please enter a Guild Name' });
-    } else {
-      setGuild({
-        name: guildNameValue,
-        slug: guildNameValue,
-        realm: {
-          name: realmNameValue,
-          slug: realmNameValue
-        },
-        faction: {
-          name: guild.faction.name
-        }
-      });
-    }
+    setGuild({
+      name: inputGuild,
+      slug: urlFriendly(inputGuild),
+      realm: {
+        name: inputRealm,
+        slug: urlFriendly(inputRealm)
+      },
+      faction: {
+        name: guild.faction.name
+      }
+    });
   };
 
   const onInputRealm = e => {
@@ -49,11 +39,19 @@ export const SearchBar = () => {
     }
   };
 
-  const searchButtonText = () => {
+  const searchButton = () => {
     if (loading) {
-      return <Loading />;
+      return (
+        <button type='submit' name='search-button' id='search-button' disabled>
+          <Loading />
+        </button>
+      );
     } else {
-      return 'Search';
+      return (
+        <button type='submit' name='search-button' id='search-button'>
+          Search
+        </button>
+      );
     }
   };
 
@@ -86,9 +84,7 @@ export const SearchBar = () => {
           value={inputGuild}
           onChange={onInputGuild}
         />
-        <button name='search-button' id='search-button'>
-          {searchButtonText()}
-        </button>
+        {searchButton()}
       </form>
       <small>
         <em>U.S. Servers Only</em>

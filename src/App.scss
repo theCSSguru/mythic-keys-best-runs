@@ -147,6 +147,11 @@ body {
         @at-root .wrapper.Alliance .search-bar button {
           background-color: $clr-alliance;
         }
+        &[disabled] {
+          cursor: default;
+          pointer-events: none;
+          opacity: 0.25;
+        }
         .loading {
           display: flex;
           justify-content: center;
