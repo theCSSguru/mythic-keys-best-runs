@@ -55,6 +55,9 @@ body {
   padding: 3rem 0;
   position: relative;
   overflow: auto;
+  @media (max-width: 864px) {
+    padding: 5vw 0;
+  }
   .error {
     color: red;
   }
@@ -100,9 +103,17 @@ body {
   }
   .search-bar {
     margin-bottom: 1.5rem;
+    @media (max-width: 864px) {
+      width: 100%;
+      padding: 0 5vw;
+    }
     form {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr 10rem;
       gap: 0.125rem;
+      @media (max-width: 864px) {
+        grid-template-columns: 1fr;
+      }
       input {
         font-size: 1.25rem;
         color: $clr-text;
@@ -146,26 +157,6 @@ body {
       }
     }
   }
-  h1 {
-    margin-top: 0;
-    text-transform: capitalize;
-    .Horde {
-      color: $clr-horde;
-    }
-    .Alliance {
-      color: $clr-alliance;
-    }
-  }
-  h2 {
-    em {
-      color: $clr-baby-blue;
-      font-style: normal;
-    }
-    span {
-      color: $clr-text-lesser;
-      font-weight: normal;
-    }
-  }
   .filter-bar {
     .selectors {
       display: flex;
@@ -191,6 +182,10 @@ body {
   }
   .characters {
     margin: 1rem 0 0;
+    @media (max-width: 864px) {
+      max-width: 100%;
+      padding: 0 5vw;
+    }
     ul {
       margin: 0;
       padding: 0;
@@ -232,7 +227,11 @@ body {
       }
     }
     .character {
-      $gridTemplateColums: 8rem 12rem auto 8rem;
+      $gridColClass: 7rem;
+      $gridColName: 10rem;
+      $gridColRuns: 1fr;
+      $GridColScore: 7rem;
+      $gridTemplateColums: $gridColClass $gridColName $gridColRuns $GridColScore;
       $gridRowsPadding: 0.75rem 1rem;
       &-list {
         border: 1px $clr-border-dark solid;
@@ -242,6 +241,13 @@ body {
           display: grid;
           grid-template-columns: $gridTemplateColums;
           background-color: $clr-bg;
+          position: sticky;
+          top: -3rem;
+          z-index: 2;
+          @media (max-width: 864px) {
+            grid-template-columns: $gridColClass 1fr $GridColScore;
+            top: -5vw;
+          }
           &-class,
           &-name,
           &-best-runs,
@@ -285,6 +291,9 @@ body {
           &-best-runs {
             text-align: center;
             cursor: default;
+            @media (max-width: 864px) {
+              display: none;
+            }
           }
           &-score {
             text-align: right;
@@ -305,11 +314,20 @@ body {
         background-color: $clr-bg-light-shade;
         border-bottom: 1px $clr-border-dark solid;
         align-items: center;
+        @media (max-width: 864px) {
+          grid-template-columns: $gridColClass 1fr $GridColScore;
+          grid-template-areas:
+            'class name score'
+            'runs runs runs';
+        }
         &:nth-child(2n + 1) {
           background-color: $clr-bg-lighter-shade;
         }
       }
       &-class {
+        @media (max-width: 864px) {
+          grid-area: class;
+        }
         img {
           display: block;
           width: 2rem;
@@ -319,17 +337,30 @@ body {
           cursor: pointer;
         }
       }
+      &-name {
+        @media (max-width: 864px) {
+          grid-area: name;
+        }
+      }
       &-best-runs {
         text-align: center;
+        @media (max-width: 864px) {
+          grid-area: runs;
+          padding-top: 0.75rem;
+        }
       }
       &-score {
         text-align: right;
+        @media (max-width: 864px) {
+          grid-area: score;
+        }
       }
     }
   }
   .mythics {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.25rem;
     .mythic {
       &-block {
