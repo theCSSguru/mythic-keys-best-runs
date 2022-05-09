@@ -192,7 +192,7 @@ export const DataProvider = ({ children }) => {
         const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
-        //console.clear(); // Clears 404 errors
+        console.clear(); // Clears 404 errors
 
         // Loads Characters
         setCharacters(characterData);
