@@ -105,6 +105,7 @@ body {
       gap: 0.25rem;
       @media (max-width: 864px) {
         grid-template-columns: 1fr;
+        gap: 0.75rem;
       }
       input {
         font-size: 1.25rem;
@@ -116,6 +117,9 @@ body {
           -webkit-text-fill-color: $clr-text;
           -webkit-box-shadow: 0 0 0px 1000px $clr-bg-light-shade inset;
         }
+      }
+      .MuiAutocomplete-root {
+        width: 100%;
       }
       .MuiOutlinedInput-root {
         background-color: $clr-bg-light-shade;
