@@ -2,9 +2,10 @@ import React, { useContext, useState } from 'react';
 import { DataContext } from '../context/DataProvider';
 import { urlFriendly } from '../Helpers';
 import { Loading } from './Loading';
+import { AutoComplete } from './AutoComplete';
 
 export const SearchBar = () => {
-  const { guild, setGuild, characters, loading, loaded, error, setError } = useContext(DataContext);
+  const { guild, setGuild, characters, loading, loaded, error, realmList } = useContext(DataContext);
   const [inputRealm, setInputRealm] = useState('Firetree');
   const [inputGuild, setInputGuild] = useState('No Thanks');
 
@@ -68,6 +69,7 @@ export const SearchBar = () => {
   return (
     <div className='search-bar'>
       <form onSubmit={handleCharacterSearch}>
+        <AutoComplete defaultValue={inputRealm} placeholder='Realm Name' data={realmList} />
         <input
           type='search'
           name='realmName'
