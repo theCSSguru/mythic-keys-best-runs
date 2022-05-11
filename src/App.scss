@@ -26,11 +26,6 @@ $clr-monk: rgb(0, 255, 152);
 $clr-druid: rgb(255, 124, 10);
 $clr-demon-hunter: rgb(163, 48, 201);
 
-// Focus Border
-@mixin focusBorder {
-  outline: 1px solid $clr-baby-blue;
-}
-
 // Layout
 * {
   box-sizing: border-box;
@@ -107,44 +102,65 @@ body {
     form {
       display: grid;
       grid-template-columns: 1fr 1fr 10rem;
-      gap: 0.125rem;
+      gap: 0.25rem;
       @media (max-width: 864px) {
         grid-template-columns: 1fr;
       }
       input {
         font-size: 1.25rem;
         color: $clr-text;
-        padding: 0.5rem;
-        border: 1px $clr-bg-lighter-shade solid;
-        background-color: $clr-bg-light-shade;
-        outline: none;
         text-transform: capitalize;
-        &:focus {
-          @include focusBorder;
-        }
         &:-webkit-autofill,
         &:-webkit-autofill:hover,
         &:-webkit-autofill:focus {
-          border: 1px solid $clr-bg-lighter-shade;
           -webkit-text-fill-color: $clr-text;
           -webkit-box-shadow: 0 0 0px 1000px $clr-bg-light-shade inset;
-          @include focusBorder;
         }
       }
-      button {
+      .MuiOutlinedInput-root {
+        background-color: $clr-bg-light-shade;
+      }
+      .MuiInputLabel-root {
+        color: $clr-text;
+        &[data-shrink='false'] {
+          font-size: 1.25rem;
+        }
+      }
+      .MuiSvgIcon-root {
+        color: $clr-text;
+      }
+      .MuiAutocomplete-popper {
+        .MuiPaper-root {
+          background-color: $clr-bg-light-shade;
+          .MuiAutocomplete-listbox {
+            &::-webkit-scrollbar {
+              width: 1rem;
+            }
+            &::-webkit-scrollbar-track {
+              background: $clr-bg;
+            }
+            &::-webkit-scrollbar-thumb {
+              background: $clr-border-light;
+            }
+            &::-webkit-scrollbar-thumb:hover {
+              background: $clr-bg-lighter-shade;
+            }
+          }
+          li {
+            color: $clr-text;
+          }
+        }
+      }
+      button[type='submit'] {
         font-size: 1.25rem;
         color: $clr-text;
         padding: 0.5rem 1rem;
         background-color: $clr-baby-blue;
-        border: none;
         cursor: pointer;
-        &:focus {
-          @include focusBorder;
-        }
-        @at-root .wrapper.Horde .search-bar button {
+        @at-root .wrapper.Horde .search-bar button[type='submit'] {
           background-color: $clr-horde;
         }
-        @at-root .wrapper.Alliance .search-bar button {
+        @at-root .wrapper.Alliance .search-bar button[type='submit'] {
           background-color: $clr-alliance;
         }
         &[disabled] {
@@ -187,9 +203,6 @@ body {
         padding: 0.5rem;
         border: 1px $clr-bg-lighter-shade solid;
         background-color: $clr-bg-light-shade;
-        &:focus {
-          @include focusBorder;
-        }
       }
     }
   }
@@ -213,9 +226,6 @@ body {
           text-decoration: none;
           &:hover {
             text-decoration: underline;
-          }
-          &:focus {
-            @include focusBorder;
           }
           $wowClasses: (
             Warrior: $clr-warrior,

@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
+import { Autocomplete, TextField, Button } from '@mui/material';
 import { DataContext } from '../context/DataProvider';
 import { urlFriendly } from '../Helpers';
 import { Loading } from './Loading';
-import { AutoComplete } from './AutoComplete';
+import RealmListJson from '../data/RealmList.json';
 
 export const SearchBar = () => {
-  const { guild, setGuild, characters, loading, loaded, error, realmList } = useContext(DataContext);
+  const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
   const [inputRealm, setInputRealm] = useState('Firetree');
   const [inputGuild, setInputGuild] = useState('No Thanks');
 
@@ -24,14 +25,6 @@ export const SearchBar = () => {
     });
   };
 
-  const onInputRealm = e => {
-    const { value } = e.target;
-    const re = /^[A-Za-z ']*$/;
-    if (value === '' || re.test(value)) {
-      setInputRealm(value);
-    }
-  };
-
   const onInputGuild = e => {
     const { value } = e.target;
     const re = /^[A-Za-z ']*$/;
@@ -43,15 +36,15 @@ export const SearchBar = () => {
   const searchButton = () => {
     if (loading) {
       return (
-        <button type='submit' name='search-button' id='search-button' disabled>
+        <Button type='submit' variant='contained' disabled>
           <Loading />
-        </button>
+        </Button>
       );
     } else {
       return (
-        <button type='submit' name='search-button' id='search-button'>
+        <Button type='submit' variant='contained'>
           Search
-        </button>
+        </Button>
       );
     }
   };
@@ -69,20 +62,22 @@ export const SearchBar = () => {
   return (
     <div className='search-bar'>
       <form onSubmit={handleCharacterSearch}>
-        <AutoComplete defaultValue={inputRealm} placeholder='Realm Name' data={realmList} />
-        <input
-          type='search'
-          name='realmName'
+        <Autocomplete
+          disablePortal
           id='realmName'
-          placeholder='Realm Name'
+          options={RealmListJson && RealmListJson.map(option => option.name)}
+          sx={{ width: 300 }}
           value={inputRealm}
-          onChange={onInputRealm}
+          onChange={(event, newValue) => {
+            setInputRealm(newValue);
+          }}
+          renderInput={params => <TextField {...params} label='Realm Name' />}
         />
-        <input
+        <TextField
           type='search'
           name='guildName'
           id='guildName'
-          placeholder='Guild Name'
+          label='Guild Name'
           value={inputGuild}
           onChange={onInputGuild}
         />

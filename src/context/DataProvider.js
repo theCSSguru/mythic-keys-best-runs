@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { urlFriendly, wowClassNames, wowDungeonShortName } from '../Helpers';
-import RealmListJson from '../data/RealmList.json';
 
 export const DataContext = createContext();
 
@@ -18,8 +17,6 @@ export const DataProvider = ({ children }) => {
       name: 'Horde'
     }
   });
-
-  const [realmList, setRealmList] = useState();
 
   // Character States
   const [characters, setCharacters] = useState();
@@ -60,7 +57,7 @@ export const DataProvider = ({ children }) => {
     getToken();
   }, []);
 
-  // Call APIs and Construct Data
+  // Call WoW APIs and Construct Data
   useEffect(() => {
     setLoading(true);
     const getData = async () => {
@@ -73,9 +70,7 @@ export const DataProvider = ({ children }) => {
         // Roster Url
         const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
         const rosterGet = await axios.get(rosterUrl);
-        const rosterMaxCharacterLevel = rosterGet.data.members
-          .filter(member => member.character.level === 60)
-          .slice(0, 3);
+        const rosterMaxCharacterLevel = rosterGet.data.members.filter(member => member.character.level === 60);
 
         // Set Guild Information
         setGuild({
@@ -197,7 +192,7 @@ export const DataProvider = ({ children }) => {
         const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
-        //console.clear(); // Clears 404 errors
+        console.clear(); // Clears 404 errors
 
         // Loads Characters
         setCharacters(characterData);
@@ -221,18 +216,6 @@ export const DataProvider = ({ children }) => {
       getData();
     }
   }, [token, guild.slug, guild.realm.slug, guild.faction.name]);
-
-  // Get Realm List from Local Json
-  useEffect(() => {
-    const getRealmList = async () => {
-      try {
-        setRealmList(RealmListJson);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getRealmList();
-  }, []);
 
   return (
     <DataContext.Provider
@@ -259,9 +242,7 @@ export const DataProvider = ({ children }) => {
         setSortScore,
         setSortedClass,
         setSortedName,
-        setSortedScore,
-        realmList,
-        setRealmList
+        setSortedScore
       }}
     >
       <div className={`wrapper ${guild.faction.name}`}>{children}</div>
