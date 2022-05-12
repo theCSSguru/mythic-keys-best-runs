@@ -109,7 +109,7 @@ export const Characters = () => {
   } else if (loading) {
     return <Loading text='Loading Characters' />;
   } else if (characters.length === 0) {
-    return <div className='characters'>There are characters in this guild running the current mythic season.</div>;
+    return <div className='characters'>There are no characters in this guild running the current mythic season.</div>;
   } else {
     return (
       <div className='characters'>

@@ -125,7 +125,7 @@ body {
         background-color: $clr-bg-light-shade;
       }
       .MuiInputLabel-root {
-        color: $clr-text;
+        color: $clr-text-lesser;
         &[data-shrink='false'] {
           font-size: 1.25rem;
         }
