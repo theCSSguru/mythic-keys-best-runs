@@ -65,7 +65,7 @@ export const SearchBar = () => {
         <Autocomplete
           disablePortal
           id='realmName'
-          options={RealmListJson && RealmListJson.map(option => option.name)}
+          options={RealmListJson && RealmListJson.sort((a, b) => a.name.localeCompare(b.name)).map(a => a.name)}
           sx={{ width: 300 }}
           value={inputRealm}
           onChange={(event, newValue) => {
