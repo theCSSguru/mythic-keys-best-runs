@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { DataContext } from '../context/DataProvider';
 import { Loading } from './Loading';
+import { IMAGE_PATH, WOW_CLASS, WOW_DUNGEON } from '../utils/constants';
 
 export const Characters = () => {
   const {
@@ -113,37 +114,37 @@ export const Characters = () => {
   } else {
     return (
       <div className='characters'>
-        <div className='character-list-heading'>
-          <div className='character-list-heading-class' data-sorted={sortedClass} data-sort={sortClass}>
-            <span className='character-class' data-sorted={sortedClassAll} onClick={sortClasses}>
-              Class
-            </span>
-            <span className='character-dash'>-</span>
-            <span className='character-class-all' data-sorted={sortedClassAll} onClick={handleClassShowAll}>
-              All
-            </span>
+        <div className='character-list'>
+          <div className='character-list-heading'>
+            <div className='character-list-heading-class' data-sorted={sortedClass} data-sort={sortClass}>
+              <span className='character-class' data-sorted={sortedClassAll} onClick={sortClasses}>
+                Class
+              </span>
+              <span className='character-dash'>-</span>
+              <span className='character-class-all' data-sorted={sortedClassAll} onClick={handleClassShowAll}>
+                All
+              </span>
+            </div>
+            <div
+              className='character-list-heading-name'
+              data-sorted={sortedName}
+              data-sort={sortName}
+              onClick={sortNames}
+            >
+              Name
+            </div>
+            <div className='character-list-heading-best-runs'>Best Runs</div>
+            <div
+              className='character-list-heading-score'
+              data-sorted={sortedScore}
+              data-sort={sortScore}
+              onClick={sortScores}
+            >
+              M+ Score
+            </div>
           </div>
-          <div
-            className='character-list-heading-name'
-            data-sorted={sortedName}
-            data-sort={sortName}
-            onClick={sortNames}
-          >
-            Name
-          </div>
-          <div className='character-list-heading-best-runs'>Best Runs</div>
-          <div
-            className='character-list-heading-score'
-            data-sorted={sortedScore}
-            data-sort={sortScore}
-            onClick={sortScores}
-          >
-            M+ Score
-          </div>
-        </div>
-        <ul className='character-list'>
           {characters.map((member, index) => (
-            <li className='character-row' key={index}>
+            <div className='character-row' key={index}>
               <div className='character-class'>
                 <img
                   src={member.class.icon}
@@ -159,7 +160,7 @@ export const Characters = () => {
                   target='_blank'
                   rel='noreferrer'
                   title={`View WoW Amory for ${member.name}`}
-                  data-wow-class={member.class.name}
+                  style={{ color: WOW_CLASS[member.class.id].color }}
                 >
                   {member.name}
                 </a>
@@ -173,11 +174,10 @@ export const Characters = () => {
                         data-short-name={run.short_name}
                         data-affix={run.affix}
                         data-in-time={run.in_time}
-                        {...(run.short_name !== undefined
-                          ? run.in_time
-                            ? { title: run.affix }
-                            : { title: `${run.affix} not timed` }
-                          : undefined)}
+                        title={`${run.name} - ${run.affix} ${run.in_time ? '' : '- NOT TIMED'}`}
+                        style={{
+                          backgroundImage: `url(${IMAGE_PATH}${WOW_DUNGEON[run.id].short_name}.jpg)`
+                        }}
                         key={ind}
                       >
                         <div className='mythic-number'>{run.level}</div>
@@ -202,9 +202,9 @@ export const Characters = () => {
                   {member.mythic_rating.rating.toFixed(0)}
                 </a>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     );
   }

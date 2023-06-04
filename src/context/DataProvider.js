@@ -1,19 +1,9 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { urlFriendly, wowClassNames, wowDungeonShortName } from '../Helpers';
+import { urlFriendly } from '../Helpers';
+import { DEFAULT_GUILD, WOW_CLASS, WOW_DUNGEON } from '../utils/constants';
 
 export const DataContext = createContext();
-
-// Default Guild
-export const DEFAULT_GUILD = {
-  name: 'Misclicked',
-  realm: {
-    name: 'Proudmoore'
-  },
-  faction: {
-    name: 'Alliance'
-  }
-};
 
 export const DataProvider = ({ children }) => {
   // Guild State
@@ -137,7 +127,7 @@ export const DataProvider = ({ children }) => {
                 return {
                   id: a.dungeon.id,
                   name: a.dungeon.name,
-                  short_name: wowDungeonShortName(a.dungeon.id),
+                  short_name: WOW_DUNGEON[a.dungeon.id].short_name,
                   in_time: a.is_completed_within_time,
                   level: a.keystone_level,
                   affix: a.keystone_affixes[0].name
@@ -184,7 +174,7 @@ export const DataProvider = ({ children }) => {
             name: member.character.name,
             class: {
               id: member.character.playable_class.id,
-              name: wowClassNames(member.character.playable_class.id),
+              name: WOW_CLASS[member.character.playable_class.id].class,
               icon: classIconData
                 .map(a => a.class.id === member.character.playable_class.id && a.class.icon)
                 .filter(a => a !== false)
@@ -200,6 +190,7 @@ export const DataProvider = ({ children }) => {
             mythic_rating: member.mythic_rating
           };
         });
+        console.log('bruh', characterDataCleanUp);
 
         const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1

@@ -1,31 +1,18 @@
-// WoW - UI Colors
+// UI Colors
 $clr-bg: rgb(26, 28, 35);
 $clr-text: rgb(255, 255, 255);
 $clr-text-lesser: rgb(184, 184, 186);
 $clr-baby-blue: rgb(122, 191, 255);
-$clr-horde: rgb(224, 41, 41);
-$clr-alliance: rgb(102, 153, 255);
 $clr-bg-light-shade: rgb(41, 43, 51);
 $clr-bg-lighter-shade: rgb(54, 55, 63);
 $clr-border-dark: rgb(17, 17, 17);
 $clr-border-light: rgb(102, 102, 102);
+
+// WOW Specific Colors
+$clr-horde: rgb(224, 41, 41);
+$clr-alliance: rgb(102, 153, 255);
 $clr-tyrannical: rgb(188, 127, 73);
 $clr-fortified: rgb(0, 179, 201);
-
-// WoW - Class Colors
-$clr-warrior: rgb(198, 155, 109);
-$clr-paladin: rgb(244, 140, 186);
-$clr-hunter: rgb(170, 211, 114);
-$clr-rogue: rgb(255, 244, 104);
-$clr-priest: rgb(255, 255, 255);
-$clr-death-knight: rgb(196, 30, 58);
-$clr-shaman: rgb(0, 112, 221);
-$clr-mage: rgb(63, 199, 235);
-$clr-warlock: rgb(135, 136, 238);
-$clr-monk: rgb(0, 255, 152);
-$clr-druid: rgb(255, 124, 10);
-$clr-demon-hunter: rgb(163, 48, 201);
-$clr-evoker: rgb(51, 147, 127);
 
 // Layout
 * {
@@ -217,51 +204,30 @@ body {
       max-width: 100%;
       padding: 0 5vw;
     }
-    ul {
-      margin: 0;
-      padding: 0;
-      li {
-        list-style: none;
-        line-height: 1.5;
-        em {
-          color: $clr-text-lesser;
-          font-style: normal;
-        }
-        a {
-          text-decoration: none;
-          &:hover {
-            text-decoration: underline;
-          }
-          $wowClasses: (
-            Warrior: $clr-warrior,
-            Paladin: $clr-paladin,
-            Hunter: $clr-hunter,
-            Rogue: $clr-rogue,
-            Priest: $clr-priest,
-            Death Knight: $clr-death-knight,
-            Shaman: $clr-shaman,
-            Mage: $clr-mage,
-            Warlock: $clr-warlock,
-            Monk: $clr-monk,
-            Druid: $clr-druid,
-            Demon Hunter: $clr-demon-hunter,
-            Evoker: $clr-evoker
-          );
-          @each $wowClassName, $wowClassVariable in $wowClasses {
-            &[data-wow-class='#{$wowClassName}'] {
-              color: $wowClassVariable;
-            }
-          }
+    div {
+      list-style: none;
+      line-height: 1.5;
+      em {
+        color: $clr-text-lesser;
+        font-style: normal;
+      }
+      a {
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
         }
       }
     }
     .character {
-      $gridColClass: 7rem;
-      $gridColName: 10rem;
-      $gridColRuns: 1fr;
-      $GridColScore: 7rem;
-      $gridTemplateColums: $gridColClass $gridColName $gridColRuns $GridColScore;
-      $gridRowsPadding: 0.75rem 1rem;
+      $gridColClass: 6rem;
+      $gridColName: minmax(6rem, 1fr);
+      $gridColRuns: 25rem;
+      $gridColScore: 5rem;
+      $gridGap: 1rem 3rem;
+      $gridTemplateColums: $gridColClass $gridColName $gridColRuns $gridColScore;
+      $gridRowsPaddingX: 1rem;
+      $gridRowsPaddingY: 0.75rem;
+      $gridRowsPadding: $gridRowsPaddingY $gridRowsPaddingX;
       &-list {
         border: 1px $clr-border-dark solid;
         border-bottom: none;
@@ -270,19 +236,22 @@ body {
           display: grid;
           grid-template-columns: $gridTemplateColums;
           background-color: $clr-bg;
+          padding: $gridRowsPadding;
+          gap: $gridGap;
           position: sticky;
           top: -3rem;
           z-index: 2;
           @media (max-width: 864px) {
-            grid-template-columns: $gridColClass 1fr $GridColScore;
+            grid-template-columns: $gridColClass 1fr $gridColScore;
             top: -5vw;
           }
           &-class,
           &-name,
           &-best-runs,
           &-score {
-            padding: $gridRowsPadding;
             position: relative;
+            margin: -$gridRowsPaddingY 0;
+            padding: $gridRowsPaddingY 0;
             cursor: pointer;
           }
           &-class {
@@ -325,7 +294,7 @@ body {
             }
           }
           &-score {
-            text-align: right;
+            text-align: center;
           }
           [data-sorted='true'][data-sort='ASC'] {
             box-shadow: inset $clr-border-light 0 6px 0;
@@ -343,11 +312,13 @@ body {
         background-color: $clr-bg-light-shade;
         border-bottom: 1px $clr-border-dark solid;
         align-items: center;
+        gap: $gridGap;
         @media (max-width: 864px) {
-          grid-template-columns: $gridColClass 1fr $GridColScore;
+          grid-template-columns: $gridColClass 1fr $gridColScore;
           grid-template-areas:
             'class name score'
             'runs runs runs';
+          row-gap: 0;
         }
         &:nth-child(2n + 1) {
           background-color: $clr-bg-lighter-shade;
@@ -379,7 +350,7 @@ body {
         }
       }
       &-score {
-        text-align: right;
+        text-align: center;
         @media (max-width: 864px) {
           grid-area: score;
         }
@@ -424,12 +395,6 @@ body {
           background-size: cover;
           background-position: center center;
           background-repeat: no-repeat;
-        }
-        $dungeons: bh, fh, hoi, nelt, nl, uld, undr, vp;
-        @each $dungeon in $dungeons {
-          &[data-short-name='#{$dungeon}'] {
-            background-image: url('./assets/img/#{$dungeon}.jpg');
-          }
         }
       }
       &-number {
