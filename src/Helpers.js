@@ -28,6 +28,8 @@ export const wowClassNames = id => {
       return 'Druid';
     case 12:
       return 'Demon Hunter';
+    case 13:
+      return 'Evoker';
     default:
       return null;
   }
@@ -35,26 +37,22 @@ export const wowClassNames = id => {
 
 export const wowDungeonShortName = id => {
   switch (id) {
-    case 377:
-      return 'dos';
-    case 392:
-      return 'gmbt';
-    case 378:
-      return 'hoa';
-    case 375:
-      return 'mists';
-    case 376:
-      return 'nw';
-    case 379:
-      return 'pf';
-    case 380:
-      return 'sd';
-    case 381:
-      return 'soa';
-    case 391:
-      return 'strt';
-    case 382:
-      return 'top';
+    case 405:
+      return 'bh';
+    case 245:
+      return 'fh';
+    case 406:
+      return 'hoi';
+    case 404:
+      return 'nelt';
+    case 206:
+      return 'nl';
+    case 403:
+      return 'uld';
+    case 251:
+      return 'undr';
+    case 438:
+      return 'vp';
     default:
       return null;
   }

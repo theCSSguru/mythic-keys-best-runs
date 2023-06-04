@@ -25,6 +25,7 @@ $clr-warlock: rgb(135, 136, 238);
 $clr-monk: rgb(0, 255, 152);
 $clr-druid: rgb(255, 124, 10);
 $clr-demon-hunter: rgb(163, 48, 201);
+$clr-evoker: rgb(51, 147, 127);
 
 // Layout
 * {
@@ -243,7 +244,8 @@ body {
             Warlock: $clr-warlock,
             Monk: $clr-monk,
             Druid: $clr-druid,
-            Demon Hunter: $clr-demon-hunter
+            Demon Hunter: $clr-demon-hunter,
+            Evoker: $clr-evoker
           );
           @each $wowClassName, $wowClassVariable in $wowClasses {
             &[data-wow-class='#{$wowClassName}'] {
@@ -423,7 +425,7 @@ body {
           background-position: center center;
           background-repeat: no-repeat;
         }
-        $dungeons: dos, gmbt, hoa, mists, nw, pf, sd, soa, strt, top;
+        $dungeons: bh, fh, hoi, nelt, nl, uld, undr, vp;
         @each $dungeon in $dungeons {
           &[data-short-name='#{$dungeon}'] {
             background-image: url('./assets/img/#{$dungeon}.jpg');

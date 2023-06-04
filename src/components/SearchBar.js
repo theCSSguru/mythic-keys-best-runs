@@ -1,14 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { Autocomplete, TextField, Button } from '@mui/material';
-import { DataContext } from '../context/DataProvider';
+import { DEFAULT_GUILD, DataContext } from '../context/DataProvider';
 import { urlFriendly } from '../Helpers';
 import { Loading } from './Loading';
 import RealmListJson from '../data/RealmList.json';
 
 export const SearchBar = () => {
   const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
-  const [inputRealm, setInputRealm] = useState('Firetree');
-  const [inputGuild, setInputGuild] = useState('No Thanks');
+  const [inputGuild, setInputGuild] = useState(DEFAULT_GUILD.name);
+  const [inputRealm, setInputRealm] = useState(DEFAULT_GUILD.realm.name);
 
   const handleCharacterSearch = e => {
     e.preventDefault();
@@ -55,7 +55,7 @@ export const SearchBar = () => {
     } else if (loading) {
       return <Loading text='- Loading Characters' />;
     } else if (loaded) {
-      return <em> - Loaded {characters.length} Level 60 Characters</em>;
+      return <em> - Loaded {characters.length} Level 70 Characters</em>;
     }
   };
 

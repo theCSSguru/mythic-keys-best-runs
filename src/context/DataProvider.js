@@ -4,17 +4,28 @@ import { urlFriendly, wowClassNames, wowDungeonShortName } from '../Helpers';
 
 export const DataContext = createContext();
 
+// Default Guild
+export const DEFAULT_GUILD = {
+  name: 'Misclicked',
+  realm: {
+    name: 'Proudmoore'
+  },
+  faction: {
+    name: 'Alliance'
+  }
+};
+
 export const DataProvider = ({ children }) => {
   // Guild State
   const [guild, setGuild] = useState({
-    name: 'No Thanks',
-    slug: 'no-thanks',
+    name: DEFAULT_GUILD.name,
+    slug: urlFriendly(DEFAULT_GUILD.name),
     realm: {
-      name: 'Firetree',
-      slug: 'firetree'
+      name: DEFAULT_GUILD.realm.name,
+      slug: urlFriendly(DEFAULT_GUILD.realm.name)
     },
     faction: {
-      name: 'Horde'
+      name: DEFAULT_GUILD.faction.name
     }
   });
 
@@ -70,7 +81,7 @@ export const DataProvider = ({ children }) => {
         // Roster Url
         const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
         const rosterGet = await axios.get(rosterUrl);
-        const rosterMaxCharacterLevel = rosterGet.data.members.filter(member => member.character.level === 60);
+        const rosterMaxCharacterLevel = rosterGet.data.members.filter(member => member.character.level === 70);
 
         // Set Guild Information
         setGuild({
@@ -89,7 +100,7 @@ export const DataProvider = ({ children }) => {
         const mythicCharacterUrls = rosterMaxCharacterLevel.map(member => {
           return `${commonProfileUrl}/${member.character.realm.slug}/${urlFriendly(
             member.character.name
-          )}/mythic-keystone-profile/season/7${commonAPIKey}`;
+          )}/mythic-keystone-profile/season/10${commonAPIKey}`;
         });
         const mythicUrlGet = await axios.all(
           mythicCharacterUrls.map(url =>
@@ -152,19 +163,20 @@ export const DataProvider = ({ children }) => {
           return {
             id: a.character.id,
             dungeons: [
-              filterBestRun(a, 'dos'),
-              filterBestRun(a, 'gmbt'),
-              filterBestRun(a, 'hoa'),
-              filterBestRun(a, 'mists'),
-              filterBestRun(a, 'nw'),
-              filterBestRun(a, 'pf'),
-              filterBestRun(a, 'sd'),
-              filterBestRun(a, 'soa'),
-              filterBestRun(a, 'strt'),
-              filterBestRun(a, 'top')
+              filterBestRun(a, 'bh'),
+              filterBestRun(a, 'fh'),
+              filterBestRun(a, 'hoi'),
+              filterBestRun(a, 'nelt'),
+              filterBestRun(a, 'nl'),
+              filterBestRun(a, 'uld'),
+              filterBestRun(a, 'undr'),
+              filterBestRun(a, 'vp')
             ]
           };
         });
+
+        console.log(characterDataMatchStatus);
+        console.log(mythicKeys);
 
         const characterDataCleanUp = characterDataMatchStatus.map(member => {
           return {
@@ -192,7 +204,7 @@ export const DataProvider = ({ children }) => {
         const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
-        console.clear(); // Clears 404 errors
+        // console.clear(); // Clears 404 errors
 
         // Loads Characters
         setCharacters(characterData);
