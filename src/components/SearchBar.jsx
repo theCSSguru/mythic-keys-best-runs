@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { Autocomplete, TextField, Button } from '@mui/material';
 import { DataContext } from '../context/DataProvider';
-import { urlFriendly } from '../Helpers';
 import { Loading } from './Loading';
 import RealmListJson from '../data/RealmList.json';
 import { DEFAULT_GUILD } from '../utils/constants';
+import { urlFriendly } from '../utils/helpers';
 
 export const SearchBar = () => {
   const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);

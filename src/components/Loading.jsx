@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const Loading = ({ text }) => {
   return (
     <div className='loading'>

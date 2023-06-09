@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { urlFriendly } from '../Helpers';
 import { DEFAULT_GUILD, WOW_CLASS, WOW_DUNGEON } from '../utils/constants';
+import { urlFriendly } from '../utils/helpers';
 
 export const DataContext = createContext();
 
