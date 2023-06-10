@@ -336,6 +336,9 @@ body {
           border-radius: 2px;
           background-size: cover;
           cursor: pointer;
+          span {
+            display: none;
+          }
         }
       }
       &-name {

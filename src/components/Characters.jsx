@@ -146,7 +146,7 @@ export const Characters = () => {
           </div>
           {characters.map((member, index) => (
             <div className='character-row' key={index}>
-              <div
+              <button
                 className='character-class-icon'
                 title={`Filter by ${member.class.name}`}
                 data-class-id={member.class.id}
@@ -156,7 +156,9 @@ export const Characters = () => {
                     WOW_CLASS.find(a => a.id === member.class.id).class
                   )}.jpg)`
                 }}
-              />
+              >
+                <span>{member.class.name}</span>
+              </button>
               <div className='character-name'>
                 <a
                   href={`${WOW_PATH}${member.realm.slug}/${member.name}`}
