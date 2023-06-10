@@ -4,7 +4,7 @@ import { DataContext } from '../context/DataProvider';
 import { Loading } from './Loading';
 import { urlFriendly } from '../utils/helpers';
 import { DEFAULT_GUILD } from '../utils/constants';
-import RealmListJson from '../data/RealmList.json';
+import realms from '../data/realms.json';
 
 export const SearchBar = () => {
   const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
@@ -66,7 +66,7 @@ export const SearchBar = () => {
         <Autocomplete
           disablePortal
           id='realmName'
-          options={RealmListJson && RealmListJson.sort((a, b) => a.name.localeCompare(b.name)).map(a => a.name)}
+          options={realms && realms.sort((a, b) => a.name.localeCompare(b.name)).map(a => a.name)}
           sx={{ width: 300 }}
           value={inputRealm}
           onChange={(event, newValue) => {
