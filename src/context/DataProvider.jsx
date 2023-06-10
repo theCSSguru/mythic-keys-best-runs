@@ -1,7 +1,16 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { DEFAULT_GUILD, WOW_CLASS, WOW_DUNGEON } from '../utils/constants';
 import { urlFriendly } from '../utils/helpers';
+import {
+  BATTLENET_OAUTH,
+  BLIZZ_API_CHARACTER,
+  BLIZZ_API_NAMESPACE,
+  BLIZZ_API_WOW,
+  DEFAULT_GUILD,
+  MAX_LEVEL,
+  WOW_CLASS,
+  WOW_DUNGEONS
+} from '../utils/constants';
 
 export const DataContext = createContext();
 
@@ -9,10 +18,10 @@ export const DataProvider = ({ children }) => {
   // Guild State
   const [guild, setGuild] = useState({
     name: DEFAULT_GUILD.name,
-    slug: urlFriendly(DEFAULT_GUILD.name),
+    slug: DEFAULT_GUILD.slug,
     realm: {
       name: DEFAULT_GUILD.realm.name,
-      slug: urlFriendly(DEFAULT_GUILD.realm.name)
+      slug: DEFAULT_GUILD.realm.slug
     },
     faction: {
       name: DEFAULT_GUILD.faction.name
@@ -42,7 +51,7 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     const getToken = async () => {
       const tokenResponse = await axios.post(
-        'https://us.battle.net/oauth/token',
+        BATTLENET_OAUTH,
         new URLSearchParams({
           grant_type: 'client_credentials'
         }),
@@ -63,15 +72,15 @@ export const DataProvider = ({ children }) => {
     setLoading(true);
     const getData = async () => {
       try {
-        // Common Urls
-        const commonDataUrl = 'https://us.api.blizzard.com/data/wow';
-        const commonProfileUrl = 'https://us.api.blizzard.com/profile/wow/character';
-        const commonAPIKey = `?namespace=profile-us&locale=en_US&access_token=${token}`;
+        // Set Token to API
+        const BLIZZ_API_NAMESPACE_TOKEN = `${BLIZZ_API_NAMESPACE}${token}`;
 
         // Roster Url
-        const rosterUrl = `${commonDataUrl}/guild/${guild.realm.slug}/${guild.slug}/roster${commonAPIKey}`;
+        const rosterUrl = `${BLIZZ_API_WOW}/guild/${guild.realm.slug}/${guild.slug}/roster${BLIZZ_API_NAMESPACE_TOKEN}`;
         const rosterGet = await axios.get(rosterUrl);
-        const rosterMaxCharacterLevel = rosterGet.data.members.filter(member => member.character.level === 70);
+        const rosterFilterMaxCharacterLevel = rosterGet.data.members.filter(
+          member => member.character.level === MAX_LEVEL
+        );
 
         // Set Guild Information
         setGuild({
@@ -87,13 +96,13 @@ export const DataProvider = ({ children }) => {
         });
 
         // Mythic Keystone Url for all Returned Members in the Guild
-        const mythicCharacterUrls = rosterMaxCharacterLevel.map(member => {
-          return `${commonProfileUrl}/${member.character.realm.slug}/${urlFriendly(
+        const mythicCharacterUrls = rosterFilterMaxCharacterLevel.map(member => {
+          return `${BLIZZ_API_CHARACTER}/${member.character.realm.slug}/${urlFriendly(
             member.character.name
-          )}/mythic-keystone-profile/season/10${commonAPIKey}`;
+          )}/mythic-keystone-profile/season/10${BLIZZ_API_NAMESPACE_TOKEN}`;
         });
         const mythicUrlGet = await axios.all(
-          mythicCharacterUrls.map(url =>
+          [...mythicCharacterUrls].map(url =>
             axios
               .get(url)
               .then(res => {
@@ -108,18 +117,6 @@ export const DataProvider = ({ children }) => {
         );
         const mythicFilterStatus = mythicUrlGet.filter(member => member.status === 200).map(member => member.data);
 
-        // Get Class Icon Image URLs
-        const classIconAPIUrl = `${commonDataUrl}/search/media?namespace=static-us&tags=playable-class&orderby=id&_page=1&access_token=${token}`;
-        const classIconAPIUrlGet = await axios.get(classIconAPIUrl);
-        const classIconData = classIconAPIUrlGet.data.results.map(item => {
-          return {
-            class: {
-              id: item.data.id,
-              icon: item.data.assets[0].value
-            }
-          };
-        });
-
         const characterDataMatchStatus = mythicFilterStatus
           .map(member => {
             return {
@@ -127,14 +124,14 @@ export const DataProvider = ({ children }) => {
                 return {
                   id: a.dungeon.id,
                   name: a.dungeon.name,
-                  short_name: WOW_DUNGEON[a.dungeon.id].short_name,
+                  short_name: WOW_DUNGEONS.find(b => b.id === a.dungeon.id).short_name,
                   in_time: a.is_completed_within_time,
                   level: a.keystone_level,
-                  affix: a.keystone_affixes[0].name
+                  affix: a.keystone_affixes?.length ? a.keystone_affixes[0].name : null
                 };
               }),
               mythic_rating: member.mythic_rating,
-              character: rosterMaxCharacterLevel
+              character: rosterFilterMaxCharacterLevel
                 .map(rosterName => rosterName.character.id === member.character.id && rosterName.character)
                 .filter(a => a !== false)
                 .shift()
@@ -142,31 +139,28 @@ export const DataProvider = ({ children }) => {
           })
           .filter(a => a.mythic_rating.rating !== 0);
 
-        const filterBestRun = (a, b) => {
-          const dungeon = b;
-          return (
-            a.best_runs.filter(b => b.short_name === dungeon).sort((c, d) => (d.level > c.level ? 1 : -1))[0] || 'null'
+        const bestMythicKeyRuns = (a, b) => {
+          const groupedDungeons = a.best_runs.reduce(
+            (c, d) =>
+              c.set(
+                d.id,
+                [...(c.get(d.id) || []), d].sort((e, f) => (f.level > e.level ? 1 : -1))
+              ),
+            new Map()
           );
+          const bestDungeonsRan = [...groupedDungeons]
+            .map(g => [...g][1][0])
+            .sort((h, j) => (j.short_name < h.short_name ? 1 : -1));
+          const mappedBestDungeonsRan = b.map(k => bestDungeonsRan.find(m => m.id === k.id) || 'null');
+          return mappedBestDungeonsRan;
         };
 
         const mythicKeys = characterDataMatchStatus.map(a => {
           return {
             id: a.character.id,
-            dungeons: [
-              filterBestRun(a, 'bh'),
-              filterBestRun(a, 'fh'),
-              filterBestRun(a, 'hoi'),
-              filterBestRun(a, 'nelt'),
-              filterBestRun(a, 'nl'),
-              filterBestRun(a, 'uld'),
-              filterBestRun(a, 'undr'),
-              filterBestRun(a, 'vp')
-            ]
+            dungeons: bestMythicKeyRuns(a, WOW_DUNGEONS)
           };
         });
-
-        console.log(characterDataMatchStatus);
-        console.log(mythicKeys);
 
         const characterDataCleanUp = characterDataMatchStatus.map(member => {
           return {
@@ -174,11 +168,7 @@ export const DataProvider = ({ children }) => {
             name: member.character.name,
             class: {
               id: member.character.playable_class.id,
-              name: WOW_CLASS[member.character.playable_class.id].class,
-              icon: classIconData
-                .map(a => a.class.id === member.character.playable_class.id && a.class.icon)
-                .filter(a => a !== false)
-                .shift()
+              name: WOW_CLASS.find(a => a.id === member.character.playable_class.id).class
             },
             realm: {
               slug: member.character.realm.slug
@@ -190,7 +180,6 @@ export const DataProvider = ({ children }) => {
             mythic_rating: member.mythic_rating
           };
         });
-        console.log('bruh', characterDataCleanUp);
 
         const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
@@ -211,6 +200,7 @@ export const DataProvider = ({ children }) => {
       } catch (err) {
         setLoaded(false);
         setError({ message: 'Did not find a matching Realm and Guild' });
+        console.log(err);
       } finally {
         setLoading(false);
       }

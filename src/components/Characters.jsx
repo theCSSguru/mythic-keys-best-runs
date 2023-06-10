@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { DataContext } from '../context/DataProvider';
 import { Loading } from './Loading';
-import { IMAGE_PATH, WOW_CLASS, WOW_DUNGEON } from '../utils/constants';
+import { IMAGE_PATH_CLASSES, IMAGE_PATH_DUNGEONS, RAIDER_IO_PATH, WOW_CLASS, WOW_PATH } from '../utils/constants';
+import { urlFriendly } from '../utils/helpers';
 
 export const Characters = () => {
   const {
@@ -145,22 +146,24 @@ export const Characters = () => {
           </div>
           {characters.map((member, index) => (
             <div className='character-row' key={index}>
-              <div className='character-class'>
-                <img
-                  src={member.class.icon}
-                  alt={`${member.class.name} icon for ${member.name}`}
-                  title={`Filter by ${member.class.name}`}
-                  data-class-id={member.class.id}
-                  onClick={handleClassFilter}
-                />
-              </div>
+              <div
+                className='character-class-icon'
+                title={`Filter by ${member.class.name}`}
+                data-class-id={member.class.id}
+                onClick={handleClassFilter}
+                style={{
+                  backgroundImage: `url(${IMAGE_PATH_CLASSES}${urlFriendly(
+                    WOW_CLASS.find(a => a.id === member.class.id).class
+                  )}.jpg)`
+                }}
+              />
               <div className='character-name'>
                 <a
-                  href={`https://worldofwarcraft.com/en-us/character/us/${member.realm.slug}/${member.name}`}
+                  href={`${WOW_PATH}${member.realm.slug}/${member.name}`}
                   target='_blank'
                   rel='noreferrer'
                   title={`View WoW Amory for ${member.name}`}
-                  style={{ color: WOW_CLASS[member.class.id].color }}
+                  style={{ color: WOW_CLASS.find(a => a.id === member.class.id).color }}
                 >
                   {member.name}
                 </a>
@@ -176,7 +179,7 @@ export const Characters = () => {
                         data-in-time={run.in_time}
                         title={`${run.name} - ${run.affix} ${run.in_time ? '' : '- NOT TIMED'}`}
                         style={{
-                          backgroundImage: `url(${IMAGE_PATH}${WOW_DUNGEON[run.id].short_name}.jpg)`
+                          backgroundImage: `url(${IMAGE_PATH_DUNGEONS}${run.short_name}.jpg)`
                         }}
                         key={ind}
                       >
@@ -191,7 +194,7 @@ export const Characters = () => {
               </div>
               <div className='character-score'>
                 <a
-                  href={`https://raider.io/characters/us/${member.realm.slug}/${member.name}`}
+                  href={`${RAIDER_IO_PATH}${member.realm.slug}/${member.name}`}
                   target='_blank'
                   rel='noreferrer'
                   title={`View Raider.io for ${member.name}`}
