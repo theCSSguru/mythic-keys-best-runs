@@ -3,11 +3,12 @@ import { Autocomplete, TextField, Button } from '@mui/material';
 import { DataContext } from '../../context/DataProvider';
 import { Loading } from '../loading/Loading';
 import { urlFriendly } from '../../utils/helpers';
-import { DEFAULT_GUILD } from '../../utils/constants';
+import { DEFAULT_GUILD, MAX_LEVEL, SEASONS } from '../../utils/constants';
 import realms from '../../data/realms.json';
 
 export const Search = () => {
-  const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
+  const { guild, setGuild, characters, season, setSeason, maxLevel, setMaxLevel, loading, loaded, error } =
+    useContext(DataContext);
   const [inputGuild, setInputGuild] = useState(DEFAULT_GUILD.name);
   const [inputRealm, setInputRealm] = useState(DEFAULT_GUILD.realm.name);
 
@@ -34,6 +35,15 @@ export const Search = () => {
     }
   };
 
+  const handleSeason = seasonNumber => {
+    if (seasonNumber <= 8) {
+      setMaxLevel(MAX_LEVEL[0]);
+    } else {
+      setMaxLevel(MAX_LEVEL[MAX_LEVEL.length - 1]);
+    }
+    setSeason(seasonNumber);
+  };
+
   const searchButton = () => {
     if (loading) {
       return (
@@ -57,7 +67,12 @@ export const Search = () => {
       return <Loading text='- Loading Characters' />;
     }
     if (loaded) {
-      return <em> - Loaded {characters.length} Level 70 Characters</em>;
+      return (
+        <em>
+          {' '}
+          - Loaded {characters.length} Level {maxLevel} Characters
+        </em>
+      );
     }
   };
 
@@ -86,8 +101,26 @@ export const Search = () => {
         {searchButton()}
       </form>
       <small>
-        <em>U.S. Servers Only</em>
-        {messages()}
+        <div className='search-info'>
+          <em>U.S. Servers Only</em>
+          {messages()}
+        </div>
+        <div className='seasons-wrap'>
+          <em>Season:</em>
+          <div className='seasons'>
+            {SEASONS.map((seasonNumber, ind) => {
+              return (
+                <button
+                  key={ind}
+                  className={seasonNumber === season ? 'active' : 'not-active'}
+                  onClick={() => handleSeason(seasonNumber)}
+                >
+                  {seasonNumber}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </small>
     </div>
   );

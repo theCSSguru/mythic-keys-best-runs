@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IMAGE_PATH_DUNGEONS } from '../../utils/constants';
+import { DataContext } from '../../context/DataProvider';
 
 export const CharactersBestRuns = ({ character }) => {
+  const { season } = useContext(DataContext);
+
   return (
     <div className='mythics'>
       {character.best_runs.map((run, ind) =>
@@ -13,7 +16,7 @@ export const CharactersBestRuns = ({ character }) => {
             data-in-time={run.in_time}
             title={`${run.name} - ${run.affix} ${run.in_time ? '' : '- NOT TIMED'}`}
             style={{
-              backgroundImage: `url(${IMAGE_PATH_DUNGEONS}${run.short_name}.jpg)`
+              backgroundImage: `url(${IMAGE_PATH_DUNGEONS}${season}/${run.short_name}.jpg)`
             }}
             key={ind}
           >

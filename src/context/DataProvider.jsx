@@ -8,6 +8,7 @@ import {
   BLIZZ_API_WOW,
   DEFAULT_GUILD,
   MAX_LEVEL,
+  SEASONS,
   WOW_CLASS,
   WOW_DUNGEONS
 } from '../utils/constants';
@@ -31,6 +32,10 @@ export const DataProvider = ({ children }) => {
   // Character States
   const [characters, setCharacters] = useState();
   const [initialCharacters, setInitialCharacters] = useState();
+
+  // Season State
+  const [season, setSeason] = useState(SEASONS[SEASONS.length - 1]);
+  const [maxLevel, setMaxLevel] = useState(MAX_LEVEL[MAX_LEVEL.length - 1]);
 
   // Loading and Error States
   const [loading, setLoading] = useState(true);
@@ -79,7 +84,7 @@ export const DataProvider = ({ children }) => {
         const rosterUrl = `${BLIZZ_API_WOW}/guild/${guild.realm.slug}/${guild.slug}/roster${BLIZZ_API_NAMESPACE_TOKEN}`;
         const rosterGet = await axios.get(rosterUrl);
         const rosterFilterMaxCharacterLevel = rosterGet.data.members.filter(
-          member => member.character.level === MAX_LEVEL
+          member => member.character.level === maxLevel
         );
 
         // Set Guild Information
@@ -99,7 +104,7 @@ export const DataProvider = ({ children }) => {
         const mythicCharacterUrls = rosterFilterMaxCharacterLevel.map(member => {
           return `${BLIZZ_API_CHARACTER}/${member.character.realm.slug}/${urlFriendly(
             member.character.name
-          )}/mythic-keystone-profile/season/10${BLIZZ_API_NAMESPACE_TOKEN}`;
+          )}/mythic-keystone-profile/season/${season}${BLIZZ_API_NAMESPACE_TOKEN}`;
         });
         const mythicUrlGet = await axios.all(
           [...mythicCharacterUrls].map(url =>
@@ -124,7 +129,7 @@ export const DataProvider = ({ children }) => {
                 return {
                   id: a.dungeon.id,
                   name: a.dungeon.name,
-                  short_name: WOW_DUNGEONS.find(b => b.id === a.dungeon.id).short_name,
+                  short_name: WOW_DUNGEONS[season].find(b => b.id === a.dungeon.id)?.short_name,
                   in_time: a.is_completed_within_time,
                   level: a.keystone_level,
                   affix: a.keystone_affixes?.length ? a.keystone_affixes[0].name : null
@@ -158,7 +163,7 @@ export const DataProvider = ({ children }) => {
         const mythicKeys = characterDataMatchStatus.map(a => {
           return {
             id: a.character.id,
-            dungeons: bestMythicKeyRuns(a, WOW_DUNGEONS)
+            dungeons: bestMythicKeyRuns(a, WOW_DUNGEONS[season])
           };
         });
 
@@ -208,7 +213,7 @@ export const DataProvider = ({ children }) => {
     if (token !== '') {
       getData();
     }
-  }, [token, guild.slug, guild.realm.slug, guild.faction.name]);
+  }, [token, guild.slug, guild.realm.slug, guild.faction.name, season, maxLevel]);
 
   return (
     <DataContext.Provider
@@ -218,6 +223,10 @@ export const DataProvider = ({ children }) => {
         characters,
         setCharacters,
         initialCharacters,
+        season,
+        setSeason,
+        maxLevel,
+        setMaxLevel,
         loading,
         loaded,
         error,
