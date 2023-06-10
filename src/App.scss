@@ -25,6 +25,7 @@ body,
   min-height: 100%;
 }
 body {
+  font-size: 1rem;
   background-color: $clr-bg;
   color: $clr-text;
   line-height: 1.2;
@@ -40,6 +41,12 @@ body {
   overflow: auto;
   @media (max-width: 864px) {
     padding: 5vw 0;
+  }
+  button {
+    cursor: pointer;
+    &[disabled] {
+      cursor: default;
+    }
   }
   .error {
     color: red;
@@ -148,7 +155,6 @@ body {
         color: $clr-text;
         padding: 0.5rem 1rem;
         background-color: $clr-baby-blue;
-        cursor: pointer;
         @at-root .wrapper.Horde .search-bar button[type='submit'] {
           background-color: $clr-horde;
         }
@@ -156,8 +162,6 @@ body {
           background-color: $clr-alliance;
         }
         &[disabled] {
-          cursor: default;
-          pointer-events: none;
           opacity: 0.25;
         }
         .loading {
@@ -245,50 +249,45 @@ body {
             grid-template-columns: $gridColClass 1fr $gridColScore;
             top: -5vw;
           }
-          &-class,
+          &-class-wrap,
           &-name,
           &-best-runs,
           &-score {
+            background: transparent;
+            border: none;
+            color: $clr-text;
+            font-size: 1rem;
             position: relative;
             margin: -$gridRowsPaddingY 0;
             padding: $gridRowsPaddingY 0;
-            cursor: pointer;
           }
           &-class {
-            cursor: default;
-            span {
-              cursor: pointer;
+            background: transparent;
+            border: none;
+            color: $clr-text;
+            font-size: 1rem;
+            margin: 0;
+            padding: 0;
+            &[disabled] {
+              color: $clr-border-light;
             }
-            .character {
-              &-dash {
-                padding: 0 0.25rem;
-                opacity: 0.5;
-              }
-              &-class {
-                cursor: pointer;
-                pointer-events: all;
-                opacity: 1;
-                &[data-sorted='true'] {
-                  cursor: default;
-                  pointer-events: none;
-                  opacity: 0.5;
-                }
-                &-all {
-                  cursor: default;
-                  pointer-events: none;
-                  opacity: 0.5;
-                  &[data-sorted='true'] {
-                    cursor: pointer;
-                    pointer-events: all;
-                    opacity: 1;
-                  }
-                }
-              }
+            &-wrap {
+              display: flex;
             }
+            &-dash {
+              cursor: default;
+              padding: 0 0.25rem;
+              opacity: 0.5;
+            }
+            &-all {
+              position: relative;
+            }
+          }
+          &-name {
+            text-align: left;
           }
           &-best-runs {
             text-align: center;
-            cursor: default;
             @media (max-width: 864px) {
               display: none;
             }
@@ -335,7 +334,6 @@ body {
           border: 1px $clr-border-light solid;
           border-radius: 2px;
           background-size: cover;
-          cursor: pointer;
           span {
             display: none;
           }

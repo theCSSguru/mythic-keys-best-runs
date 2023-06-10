@@ -117,32 +117,42 @@ export const Characters = () => {
       <div className='characters'>
         <div className='character-list'>
           <div className='character-list-heading'>
-            <div className='character-list-heading-class' data-sorted={sortedClass} data-sort={sortClass}>
-              <span className='character-class' data-sorted={sortedClassAll} onClick={sortClasses}>
+            <div className='character-list-heading-class-wrap' data-sorted={sortedClass} data-sort={sortClass}>
+              <button
+                className='character-list-heading-class'
+                data-sorted={sortedClassAll}
+                onClick={sortClasses}
+                disabled={sortedClassAll ? 'disabled' : null}
+              >
                 Class
-              </span>
-              <span className='character-dash'>-</span>
-              <span className='character-class-all' data-sorted={sortedClassAll} onClick={handleClassShowAll}>
+              </button>
+              <span className='character-list-heading-class-dash'>-</span>
+              <button
+                className='character-list-heading-class-all'
+                data-sorted={sortedClassAll}
+                onClick={handleClassShowAll}
+                disabled={sortedClassAll ? null : 'disabled'}
+              >
                 All
-              </span>
+              </button>
             </div>
-            <div
+            <button
               className='character-list-heading-name'
               data-sorted={sortedName}
               data-sort={sortName}
               onClick={sortNames}
             >
               Name
-            </div>
+            </button>
             <div className='character-list-heading-best-runs'>Best Runs</div>
-            <div
+            <button
               className='character-list-heading-score'
               data-sorted={sortedScore}
               data-sort={sortScore}
               onClick={sortScores}
             >
               M+ Score
-            </div>
+            </button>
           </div>
           {characters.map((member, index) => (
             <div className='character-row' key={index}>
