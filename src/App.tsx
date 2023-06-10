@@ -1,4 +1,3 @@
-import React from 'react';
 import { DataProvider } from './context/DataProvider';
 import { Search } from './components/search/Search';
 import { Characters } from './components/characters/Characters';

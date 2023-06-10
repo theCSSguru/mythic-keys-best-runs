@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { IMAGE_PATH_DUNGEONS } from '../../utils/constants';
 import { DataContext } from '../../context/DataProvider';
 

@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { DataContext } from '../../context/DataProvider';
 import { Loading } from '../loading/Loading';
 import { CharactersHeading } from './CharactersHeading';
 import { CharactersBestRuns } from './CharactersBestRuns';
 import { urlFriendly } from '../../utils/helpers';
-import { IMAGE_PATH_CLASSES, RAIDER_IO_PATH, WOW_CLASS, WOW_PATH } from '../../utils/constants';
+import { IMAGE_PATH_CLASSES, RAIDER_IO_PATH, SORT, WOW_CLASS, WOW_PATH } from '../../utils/constants';
 
 export const Characters = () => {
   const {
@@ -19,7 +19,7 @@ export const Characters = () => {
     setSortedScore
   } = useContext(DataContext);
 
-  const handleClassFilter = e => {
+  const handleClassFilter = (e: any) => {
     const dataClassId = parseInt(e.target.getAttribute('data-class-id'));
     const filterByClass = [...characters]
       .filter(a => a.class.id === dataClassId)
@@ -27,7 +27,7 @@ export const Characters = () => {
     setSortedClass(false);
     setSortedName(false);
     setSortedScore(true);
-    setSortScore('DESC');
+    setSortScore(SORT.DESC);
     setSortedClassAll(true);
     setCharacters(filterByClass);
   };

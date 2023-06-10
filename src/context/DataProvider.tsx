@@ -13,9 +13,13 @@ import {
   WOW_DUNGEONS
 } from '../utils/constants';
 
-export const DataContext = createContext();
+interface DataContextTypes {
+  children?: React.ReactNode;
+}
 
-export const DataProvider = ({ children }) => {
+export const DataContext = createContext<DataContextTypes | null>(null);
+
+export const DataProvider = ({ children }: DataContextTypes) => {
   // Guild State
   const [guild, setGuild] = useState({
     name: DEFAULT_GUILD.name,
@@ -62,8 +66,8 @@ export const DataProvider = ({ children }) => {
         }),
         {
           auth: {
-            username: process.env.REACT_APP_CLIENT_ID,
-            password: process.env.REACT_APP_CLIENT_SECRET
+            username: import.meta.env.VITE_APP_CLIENT_ID,
+            password: import.meta.env.VITE_APP_CLIENT_SECRET
           }
         }
       );
@@ -84,7 +88,7 @@ export const DataProvider = ({ children }) => {
         const rosterUrl = `${BLIZZ_API_WOW}/guild/${guild.realm.slug}/${guild.slug}/roster${BLIZZ_API_NAMESPACE_TOKEN}`;
         const rosterGet = await axios.get(rosterUrl);
         const rosterFilterMaxCharacterLevel = rosterGet.data.members.filter(
-          member => member.character.level === maxLevel
+          (member: { character: { level: number } }) => member.character.level === maxLevel
         );
 
         // Set Guild Information
@@ -101,11 +105,13 @@ export const DataProvider = ({ children }) => {
         });
 
         // Mythic Keystone Url for all Returned Members in the Guild
-        const mythicCharacterUrls = rosterFilterMaxCharacterLevel.map(member => {
-          return `${BLIZZ_API_CHARACTER}/${member.character.realm.slug}/${urlFriendly(
-            member.character.name
-          )}/mythic-keystone-profile/season/${season}${BLIZZ_API_NAMESPACE_TOKEN}`;
-        });
+        const mythicCharacterUrls = rosterFilterMaxCharacterLevel.map(
+          (member: { character: { realm: { slug: string }; name: string } }) => {
+            return `${BLIZZ_API_CHARACTER}/${member.character.realm.slug}/${urlFriendly(
+              member.character.name
+            )}/mythic-keystone-profile/season/${season}${BLIZZ_API_NAMESPACE_TOKEN}`;
+          }
+        );
         const mythicUrlGet = await axios.all(
           [...mythicCharacterUrls].map(url =>
             axios
@@ -120,31 +126,41 @@ export const DataProvider = ({ children }) => {
               })
           )
         );
-        const mythicFilterStatus = mythicUrlGet.filter(member => member.status === 200).map(member => member.data);
+        const mythicFilterStatus = mythicUrlGet.filter(member => member?.status === 200).map(member => member?.data);
 
         const characterDataMatchStatus = mythicFilterStatus
           .map(member => {
             return {
-              best_runs: member.best_runs.map(a => {
-                return {
-                  id: a.dungeon.id,
-                  name: a.dungeon.name,
-                  short_name: WOW_DUNGEONS[season].find(b => b.id === a.dungeon.id)?.short_name,
-                  in_time: a.is_completed_within_time,
-                  level: a.keystone_level,
-                  affix: a.keystone_affixes?.length ? a.keystone_affixes[0].name : null
-                };
-              }),
+              best_runs: member.best_runs.map(
+                (a: {
+                  dungeon: { id: number; name: string };
+                  is_completed_within_time: boolean;
+                  keystone_level: number;
+                  keystone_affixes: string | any[];
+                }) => {
+                  return {
+                    id: a.dungeon.id,
+                    name: a.dungeon.name,
+                    short_name: WOW_DUNGEONS[season].find(b => b.id === a.dungeon.id)?.short_name,
+                    in_time: a.is_completed_within_time,
+                    level: a.keystone_level,
+                    affix: a.keystone_affixes?.length ? a.keystone_affixes[0].name : null
+                  };
+                }
+              ),
               mythic_rating: member.mythic_rating,
               character: rosterFilterMaxCharacterLevel
-                .map(rosterName => rosterName.character.id === member.character.id && rosterName.character)
-                .filter(a => a !== false)
+                .map(
+                  (rosterName: { character: { id: number } }) =>
+                    rosterName.character.id === member.character.id && rosterName.character
+                )
+                .filter((a: boolean) => a !== false)
                 .shift()
             };
           })
           .filter(a => a.mythic_rating.rating !== 0);
 
-        const bestMythicKeyRuns = (a, b) => {
+        const bestMythicKeyRuns = (a: { best_runs: []; mythic_rating?: number; character?: string }, b: any[]) => {
           const groupedDungeons = a.best_runs.reduce(
             (c, d) =>
               c.set(

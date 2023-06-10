@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { DataContext } from '../../context/DataProvider';
 import { SORT } from '../../utils/constants';
 
@@ -81,7 +81,7 @@ export const CharactersHeading = () => {
     setSortName(SORT.DEFAULT);
   };
 
-  const handleClassShowAll = e => {
+  const handleClassShowAll = (e: any) => {
     setSortedClass(false);
     setSortedName(false);
     setSortedScore(true);
@@ -96,7 +96,7 @@ export const CharactersHeading = () => {
           className='character-list-heading-class'
           data-sorted={sortedClassAll}
           onClick={sortClasses}
-          disabled={sortedClassAll ? 'disabled' : null}
+          disabled={sortedClassAll}
         >
           Class
         </button>
@@ -105,7 +105,7 @@ export const CharactersHeading = () => {
           className='character-list-heading-class-all'
           data-sorted={sortedClassAll}
           onClick={handleClassShowAll}
-          disabled={sortedClassAll ? null : 'disabled'}
+          disabled={!sortedClassAll}
         >
           All
         </button>
