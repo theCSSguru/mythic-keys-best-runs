@@ -1,13 +1,13 @@
 import React from 'react';
 import { DataProvider } from './context/DataProvider';
-import { SearchBar } from './components/SearchBar';
-import { Characters } from './components/Characters';
+import { Search } from './components/search/Search';
+import { Characters } from './components/characters/Characters';
 import './App.scss';
 
 const App = () => {
   return (
     <DataProvider>
-      <SearchBar />
+      <Search />
       <Characters />
     </DataProvider>
   );

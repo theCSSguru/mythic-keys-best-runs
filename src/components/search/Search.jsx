@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { Autocomplete, TextField, Button } from '@mui/material';
-import { DataContext } from '../context/DataProvider';
-import { Loading } from './Loading';
-import { urlFriendly } from '../utils/helpers';
-import { DEFAULT_GUILD } from '../utils/constants';
-import realms from '../data/realms.json';
+import { DataContext } from '../../context/DataProvider';
+import { Loading } from '../loading/Loading';
+import { urlFriendly } from '../../utils/helpers';
+import { DEFAULT_GUILD } from '../../utils/constants';
+import realms from '../../data/realms.json';
 
-export const SearchBar = () => {
+export const Search = () => {
   const { guild, setGuild, characters, loading, loaded, error } = useContext(DataContext);
   const [inputGuild, setInputGuild] = useState(DEFAULT_GUILD.name);
   const [inputRealm, setInputRealm] = useState(DEFAULT_GUILD.realm.name);
@@ -41,21 +41,22 @@ export const SearchBar = () => {
           <Loading />
         </Button>
       );
-    } else {
-      return (
-        <Button type='submit' variant='contained'>
-          Search
-        </Button>
-      );
     }
+    return (
+      <Button type='submit' variant='contained'>
+        Search
+      </Button>
+    );
   };
 
   const messages = () => {
     if (error) {
       return <em className='error'> - Error: {error.message}</em>;
-    } else if (loading) {
+    }
+    if (loading) {
       return <Loading text='- Loading Characters' />;
-    } else if (loaded) {
+    }
+    if (loaded) {
       return <em> - Loaded {characters.length} Level 70 Characters</em>;
     }
   };

@@ -1,3 +1,9 @@
+export const SORT = {
+  DEFAULT: 'DEFAULT',
+  DESC: 'DESC',
+  ASC: 'ASC'
+};
+
 export const MAX_LEVEL = 70;
 export const IMAGE_PATH_DUNGEONS = 'assets/img/dungeons/';
 export const IMAGE_PATH_CLASSES = 'assets/img/classes/';
