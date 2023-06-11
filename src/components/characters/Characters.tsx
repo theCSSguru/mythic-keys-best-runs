@@ -32,7 +32,7 @@ export const Characters = () => {
     setCharacters(filterByClass);
   };
 
-  if (error) {
+  if (error.message) {
     return <em className='error'>Error: {error.message}</em>;
   }
   if (loading) {

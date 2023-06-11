@@ -1,6 +1,19 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { urlFriendly } from '../utils/helpers';
+import {
+  DataContextType,
+  GuildType,
+  CharacterType,
+  BestRunsType,
+  SeasonType,
+  MaxLevelType,
+  MythicRunsType,
+  WowClassType,
+  DungeonsType,
+  ErrorType,
+  CharacterDataType
+} from '../types/types';
 import {
   BATTLENET_OAUTH,
   BLIZZ_API_CHARACTER,
@@ -9,19 +22,16 @@ import {
   DEFAULT_GUILD,
   MAX_LEVEL,
   SEASONS,
+  SORT,
   WOW_CLASS,
   WOW_DUNGEONS
 } from '../utils/constants';
 
-interface DataContextTypes {
-  children?: React.ReactNode;
-}
+export const DataContext = createContext<DataContextType | null>(null);
 
-export const DataContext = createContext<DataContextTypes | null>(null);
-
-export const DataProvider = ({ children }: DataContextTypes) => {
+export const DataProvider = ({ children }: DataContextType) => {
   // Guild State
-  const [guild, setGuild] = useState({
+  const [guild, setGuild] = useState<GuildType>({
     name: DEFAULT_GUILD.name,
     slug: DEFAULT_GUILD.slug,
     realm: {
@@ -34,17 +44,17 @@ export const DataProvider = ({ children }: DataContextTypes) => {
   });
 
   // Character States
-  const [characters, setCharacters] = useState();
-  const [initialCharacters, setInitialCharacters] = useState();
+  const [characters, setCharacters] = useState<CharacterDataType>();
+  const [initialCharacters, setInitialCharacters] = useState<CharacterDataType>();
 
   // Season State
-  const [season, setSeason] = useState(SEASONS[SEASONS.length - 1]);
-  const [maxLevel, setMaxLevel] = useState(MAX_LEVEL[MAX_LEVEL.length - 1]);
+  const [season, setSeason] = useState<SeasonType>(SEASONS[SEASONS.length - 1]);
+  const [maxLevel, setMaxLevel] = useState<MaxLevelType>(MAX_LEVEL[MAX_LEVEL.length - 1]);
 
   // Loading and Error States
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<ErrorType>({ message: null });
 
   // Sort States
   const [sortClass, setSortClass] = useState('DEFAULT');
@@ -85,10 +95,10 @@ export const DataProvider = ({ children }: DataContextTypes) => {
         const BLIZZ_API_NAMESPACE_TOKEN = `${BLIZZ_API_NAMESPACE}${token}`;
 
         // Roster Url
-        const rosterUrl = `${BLIZZ_API_WOW}/guild/${guild.realm.slug}/${guild.slug}/roster${BLIZZ_API_NAMESPACE_TOKEN}`;
+        const rosterUrl = `${BLIZZ_API_WOW}/guild/${guild?.realm?.slug}/${guild?.slug}/roster${BLIZZ_API_NAMESPACE_TOKEN}`;
         const rosterGet = await axios.get(rosterUrl);
         const rosterFilterMaxCharacterLevel = rosterGet.data.members.filter(
-          (member: { character: { level: number } }) => member.character.level === maxLevel
+          (member: CharacterType) => member?.character?.level === maxLevel
         );
 
         // Set Guild Information
@@ -105,13 +115,10 @@ export const DataProvider = ({ children }: DataContextTypes) => {
         });
 
         // Mythic Keystone Url for all Returned Members in the Guild
-        const mythicCharacterUrls = rosterFilterMaxCharacterLevel.map(
-          (member: { character: { realm: { slug: string }; name: string } }) => {
-            return `${BLIZZ_API_CHARACTER}/${member.character.realm.slug}/${urlFriendly(
-              member.character.name
-            )}/mythic-keystone-profile/season/${season}${BLIZZ_API_NAMESPACE_TOKEN}`;
-          }
-        );
+        const mythicCharacterUrls = rosterFilterMaxCharacterLevel.map((member: CharacterType) => {
+          const mythicKeystoneProfileURL = `${BLIZZ_API_CHARACTER}/${member?.character?.realm?.slug}/${member?.character?.name}/mythic-keystone-profile/season/${season}`;
+          return `${urlFriendly(mythicKeystoneProfileURL)}${BLIZZ_API_NAMESPACE_TOKEN}`;
+        });
         const mythicUrlGet = await axios.all(
           [...mythicCharacterUrls].map(url =>
             axios
@@ -126,33 +133,30 @@ export const DataProvider = ({ children }: DataContextTypes) => {
               })
           )
         );
-        const mythicFilterStatus = mythicUrlGet.filter(member => member?.status === 200).map(member => member?.data);
+        const mythicFilterStatus = mythicUrlGet
+          .filter(member => member?.status === 200)
+          .map((member: any) => member.data);
 
         const characterDataMatchStatus = mythicFilterStatus
           .map(member => {
             return {
-              best_runs: member.best_runs.map(
-                (a: {
-                  dungeon: { id: number; name: string };
-                  is_completed_within_time: boolean;
-                  keystone_level: number;
-                  keystone_affixes: string | any[];
-                }) => {
-                  return {
-                    id: a.dungeon.id,
-                    name: a.dungeon.name,
-                    short_name: WOW_DUNGEONS[season].find(b => b.id === a.dungeon.id)?.short_name,
-                    in_time: a.is_completed_within_time,
-                    level: a.keystone_level,
-                    affix: a.keystone_affixes?.length ? a.keystone_affixes[0].name : null
-                  };
-                }
-              ),
+              best_runs: member.best_runs.map((a: BestRunsType) => {
+                return {
+                  id: a?.dungeon?.id,
+                  name: a?.dungeon?.name,
+                  short_name: WOW_DUNGEONS.find(b => b.id === season)?.dungeons.find(
+                    (c: DungeonsType) => c.id === a?.dungeon?.id
+                  )?.short_name,
+                  in_time: a?.is_completed_within_time,
+                  level: a?.keystone_level,
+                  affix: a?.keystone_affixes?.length ? a?.keystone_affixes[0]?.name : null
+                };
+              }),
               mythic_rating: member.mythic_rating,
               character: rosterFilterMaxCharacterLevel
                 .map(
-                  (rosterName: { character: { id: number } }) =>
-                    rosterName.character.id === member.character.id && rosterName.character
+                  (rosterName: CharacterType) =>
+                    rosterName?.character?.id === member?.character?.id && rosterName?.character
                 )
                 .filter((a: boolean) => a !== false)
                 .shift()
@@ -160,26 +164,26 @@ export const DataProvider = ({ children }: DataContextTypes) => {
           })
           .filter(a => a.mythic_rating.rating !== 0);
 
-        const bestMythicKeyRuns = (a: { best_runs: []; mythic_rating?: number; character?: string }, b: any[]) => {
-          const groupedDungeons = a.best_runs.reduce(
-            (c, d) =>
+        const bestMythicKeyRuns = (a: MythicRunsType, b: any) => {
+          const groupedDungeons = a?.best_runs?.reduce(
+            (c: any, d: any) =>
               c.set(
-                d.id,
-                [...(c.get(d.id) || []), d].sort((e, f) => (f.level > e.level ? 1 : -1))
+                d?.id,
+                [...(c.get(d?.id) || []), d].sort((e, f) => (f.level > e.level ? 1 : -1))
               ),
             new Map()
           );
           const bestDungeonsRan = [...groupedDungeons]
             .map(g => [...g][1][0])
             .sort((h, j) => (j.short_name < h.short_name ? 1 : -1));
-          const mappedBestDungeonsRan = b.map(k => bestDungeonsRan.find(m => m.id === k.id) || 'null');
+          const mappedBestDungeonsRan = b.map((k: DungeonsType) => bestDungeonsRan.find(m => m.id === k.id) || 'null');
           return mappedBestDungeonsRan;
         };
 
         const mythicKeys = characterDataMatchStatus.map(a => {
           return {
             id: a.character.id,
-            dungeons: bestMythicKeyRuns(a, WOW_DUNGEONS[season])
+            dungeons: bestMythicKeyRuns(a, WOW_DUNGEONS.find(b => b.id === season)?.dungeons)
           };
         });
 
@@ -189,13 +193,13 @@ export const DataProvider = ({ children }: DataContextTypes) => {
             name: member.character.name,
             class: {
               id: member.character.playable_class.id,
-              name: WOW_CLASS.find(a => a.id === member.character.playable_class.id).class
+              name: WOW_CLASS.find((a: WowClassType) => a?.id === member?.character?.playable_class?.id)?.class
             },
             realm: {
               slug: member.character.realm.slug
             },
             best_runs: mythicKeys
-              .map(a => a.id === member.character.id && a.dungeons)
+              .map(a => a?.id === member?.character?.id && a?.dungeons)
               .filter(a => a !== false)
               .shift(),
             mythic_rating: member.mythic_rating
@@ -210,14 +214,14 @@ export const DataProvider = ({ children }: DataContextTypes) => {
         // Loads Characters
         setCharacters(characterData);
         setInitialCharacters(characterData);
-        setError(null);
+        setError({ message: null });
         setLoaded(true);
         // Resets Sort by Score
         setSortedClass(false);
         setSortedClassAll(false);
         setSortedName(false);
         setSortedScore(true);
-        setSortScore('DESC');
+        setSortScore(SORT.DESC);
       } catch (err) {
         setLoaded(false);
         setError({ message: 'Did not find a matching Realm and Guild' });
@@ -229,7 +233,7 @@ export const DataProvider = ({ children }: DataContextTypes) => {
     if (token !== '') {
       getData();
     }
-  }, [token, guild.slug, guild.realm.slug, guild.faction.name, season, maxLevel]);
+  }, [token, guild?.slug, guild?.realm?.slug, guild?.faction?.name, season, maxLevel]);
 
   return (
     <DataContext.Provider
@@ -263,7 +267,7 @@ export const DataProvider = ({ children }: DataContextTypes) => {
         setSortedScore
       }}
     >
-      <div className={`wrapper ${guild.faction.name}`}>{children}</div>
+      <div className={`wrapper ${guild?.faction?.name}`}>{children}</div>
     </DataContext.Provider>
   );
 };

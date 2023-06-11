@@ -60,7 +60,7 @@ export const Search = () => {
   };
 
   const messages = () => {
-    if (error) {
+    if (error.message) {
       return <em className='error'> - Error: {error.message}</em>;
     }
     if (loading) {
