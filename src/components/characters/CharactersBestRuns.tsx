@@ -1,13 +1,13 @@
 import { useContext } from 'react';
-import { IMAGE_PATH_DUNGEONS } from '../../utils/constants';
 import { DataContext } from '../../context/DataProvider';
+import { IMAGE_PATH_DUNGEONS } from '../../utils/constants';
 
-export const CharactersBestRuns = ({ character }) => {
+export const CharactersBestRuns = (character: any) => {
   const { season } = useContext(DataContext);
 
   return (
     <div className='mythics'>
-      {character.best_runs.map((run, ind) =>
+      {character?.character?.best_runs?.map((run: any, ind: number) =>
         run !== 'null' ? (
           <div
             className='mythic-block'

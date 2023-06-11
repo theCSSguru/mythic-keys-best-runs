@@ -25,14 +25,14 @@ export const CharactersHeading = () => {
 
   const sortClasses = () => {
     if (sortClass === SORT.DESC || sortClass === SORT.DEFAULT) {
-      const asc = [...characters].sort(
+      const asc = characters?.sort(
         (a, b) => b.class.id - a.class.id || b.mythic_rating.rating - a.mythic_rating.rating
       );
       setSortClass(SORT.ASC);
       setCharacters(asc);
     }
     if (sortClass === SORT.ASC) {
-      const desc = [...characters].sort(
+      const desc = characters?.sort(
         (a, b) => a.class.id - b.class.id || b.mythic_rating.rating - a.mythic_rating.rating
       );
       setSortClass(SORT.DESC);
@@ -47,12 +47,12 @@ export const CharactersHeading = () => {
 
   const sortNames = () => {
     if (sortName === SORT.DESC || sortName === SORT.DEFAULT) {
-      const asc = [...characters].sort((a, b) => (a.name > b.name ? 1 : -1));
+      const asc = characters?.sort((a, b) => (a.name > b.name ? 1 : -1));
       setSortName(SORT.ASC);
       setCharacters(asc);
     }
     if (sortName === SORT.ASC) {
-      const desc = [...characters].sort((a, b) => (a.name < b.name ? 1 : -1));
+      const desc = characters?.sort((a, b) => (a.name < b.name ? 1 : -1));
       setSortName(SORT.DESC);
       setCharacters(desc);
     }
@@ -65,12 +65,12 @@ export const CharactersHeading = () => {
 
   const sortScores = () => {
     if (sortScore === SORT.DESC) {
-      const asc = [...characters].sort((a, b) => (a.mythic_rating.rating > b.mythic_rating.rating ? 1 : -1));
+      const asc = characters?.sort((a, b) => (a.mythic_rating.rating > b.mythic_rating.rating ? 1 : -1));
       setSortScore(SORT.ASC);
       setCharacters(asc);
     }
     if (sortScore === SORT.ASC) {
-      const desc = [...characters].sort((a, b) => (a.mythic_rating.rating < b.mythic_rating.rating ? 1 : -1));
+      const desc = characters?.sort((a, b) => (a.mythic_rating.rating < b.mythic_rating.rating ? 1 : -1));
       setSortScore(SORT.DESC);
       setCharacters(desc);
     }
@@ -81,7 +81,7 @@ export const CharactersHeading = () => {
     setSortName(SORT.DEFAULT);
   };
 
-  const handleClassShowAll = (e: any) => {
+  const handleClassShowAll = () => {
     setSortedClass(false);
     setSortedName(false);
     setSortedScore(true);

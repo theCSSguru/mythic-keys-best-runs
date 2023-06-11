@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { urlFriendly } from '../utils/helpers';
 import {
   DataContextType,
@@ -8,7 +8,6 @@ import {
   BestRunsType,
   SeasonType,
   MaxLevelType,
-  MythicRunsType,
   WowClassType,
   DungeonsType,
   ErrorType,
@@ -27,43 +26,76 @@ import {
   WOW_DUNGEONS
 } from '../utils/constants';
 
-export const DataContext = createContext<DataContextType | null>(null);
+const GuildState = {
+  name: DEFAULT_GUILD.name,
+  slug: DEFAULT_GUILD.slug,
+  realm: {
+    name: DEFAULT_GUILD.realm.name,
+    slug: DEFAULT_GUILD.realm.slug
+  },
+  faction: {
+    name: DEFAULT_GUILD.faction.name
+  }
+};
+
+const DataContextState = {
+  children: null,
+  guild: GuildState,
+  setGuild: () => null,
+  characters: [],
+  setCharacters: () => null,
+  initialCharacters: [],
+  season: SEASONS[SEASONS.length - 1],
+  setSeason: () => null,
+  maxLevel: MAX_LEVEL[MAX_LEVEL.length - 1],
+  setMaxLevel: () => null,
+  loading: true,
+  loaded: false,
+  error: { message: null },
+  setError: () => null,
+  sortClass: SORT.DEFAULT,
+  sortName: SORT.DEFAULT,
+  sortScore: SORT.DESC,
+  sortedClass: false,
+  sortedClassAll: false,
+  sortedName: false,
+  sortedScore: true,
+  setSortClass: () => null,
+  setSortedClassAll: () => null,
+  setSortName: () => null,
+  setSortScore: () => null,
+  setSortedClass: () => null,
+  setSortedName: () => null,
+  setSortedScore: () => null
+};
+
+export const DataContext = createContext<DataContextType>(DataContextState);
 
 export const DataProvider = ({ children }: DataContextType) => {
-  // Guild State
-  const [guild, setGuild] = useState<GuildType>({
-    name: DEFAULT_GUILD.name,
-    slug: DEFAULT_GUILD.slug,
-    realm: {
-      name: DEFAULT_GUILD.realm.name,
-      slug: DEFAULT_GUILD.realm.slug
-    },
-    faction: {
-      name: DEFAULT_GUILD.faction.name
-    }
-  });
+  // Guild
+  const [guild, setGuild] = useState<GuildType>(GuildState);
 
   // Character States
   const [characters, setCharacters] = useState<CharacterDataType[]>();
   const [initialCharacters, setInitialCharacters] = useState<CharacterDataType[]>();
 
   // Season State
-  const [season, setSeason] = useState<SeasonType>(SEASONS[SEASONS.length - 1]);
-  const [maxLevel, setMaxLevel] = useState<MaxLevelType>(MAX_LEVEL[MAX_LEVEL.length - 1]);
+  const [season, setSeason] = useState<SeasonType>(DataContextState.season);
+  const [maxLevel, setMaxLevel] = useState<MaxLevelType>(DataContextState.maxLevel);
 
   // Loading and Error States
-  const [loading, setLoading] = useState(true);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState<ErrorType>({ message: null });
+  const [loading, setLoading] = useState(DataContextState.loading);
+  const [loaded, setLoaded] = useState(DataContextState.loaded);
+  const [error, setError] = useState<ErrorType>(DataContextState.error);
 
   // Sort States
-  const [sortClass, setSortClass] = useState(SORT.DEFAULT);
-  const [sortName, setSortName] = useState(SORT.DEFAULT);
-  const [sortScore, setSortScore] = useState(SORT.DESC);
-  const [sortedClass, setSortedClass] = useState(false);
-  const [sortedClassAll, setSortedClassAll] = useState(false);
-  const [sortedName, setSortedName] = useState(false);
-  const [sortedScore, setSortedScore] = useState(true);
+  const [sortClass, setSortClass] = useState(DataContextState.sortClass);
+  const [sortName, setSortName] = useState(DataContextState.sortName);
+  const [sortScore, setSortScore] = useState(DataContextState.sortScore);
+  const [sortedClass, setSortedClass] = useState(DataContextState.sortedClass);
+  const [sortedClassAll, setSortedClassAll] = useState(DataContextState.sortedClassAll);
+  const [sortedName, setSortedName] = useState(DataContextState.sortedName);
+  const [sortedScore, setSortedScore] = useState(DataContextState.sortedScore);
 
   // Token State
   const [token, setToken] = useState('');
@@ -162,7 +194,7 @@ export const DataProvider = ({ children }: DataContextType) => {
           })
           .filter(a => a.mythic_rating.rating !== 0);
 
-        const bestMythicKeyRuns = (a: MythicRunsType, b: any) => {
+        const bestMythicKeyRuns = (a: any, b: any) => {
           const groupedDungeons = a?.best_runs?.reduce(
             (c: any, d: any) =>
               c.set(
@@ -207,25 +239,17 @@ export const DataProvider = ({ children }: DataContextType) => {
         const characterData = characterDataCleanUp.sort((a, b) =>
           b.mythic_rating.rating > a.mythic_rating.rating ? 1 : -1
         );
-        // console.clear(); // Clears 404 errors
 
         // Loads Characters
         setCharacters(characterData);
         setInitialCharacters(characterData);
-        setError({ message: null });
-        setLoaded(true);
-        // Resets Sort by Score
-        setSortedClass(false);
-        setSortedClassAll(false);
-        setSortedName(false);
-        setSortedScore(true);
-        setSortScore(SORT.DESC);
       } catch (err) {
         setLoaded(false);
         setError({ message: 'Did not find a matching Realm and Guild' });
         console.log(err);
       } finally {
         setLoading(false);
+        setLoaded(true);
       }
     };
     if (token !== '') {

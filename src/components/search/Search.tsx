@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Autocomplete, TextField, Button } from '@mui/material';
 import { DataContext } from '../../context/DataProvider';
 import { Loading } from '../loading/Loading';
@@ -9,10 +9,10 @@ import realms from '../../data/realms.json';
 export const Search = () => {
   const { guild, setGuild, characters, season, setSeason, maxLevel, setMaxLevel, loading, loaded, error } =
     useContext(DataContext);
-  const [inputGuild, setInputGuild] = useState(DEFAULT_GUILD.name);
-  const [inputRealm, setInputRealm] = useState(DEFAULT_GUILD.realm.name);
+  const [inputGuild, setInputGuild] = useState<string>(DEFAULT_GUILD.name);
+  const [inputRealm, setInputRealm] = useState<string>(DEFAULT_GUILD.realm.name);
 
-  const handleCharacterSearch = e => {
+  const handleCharacterSearch = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setGuild({
       name: inputGuild,
@@ -22,12 +22,12 @@ export const Search = () => {
         slug: urlFriendly(inputRealm)
       },
       faction: {
-        name: guild.faction.name
+        name: guild?.faction?.name
       }
     });
   };
 
-  const onInputGuild = e => {
+  const onInputGuild = (e: { target: { value: string } }) => {
     const { value } = e.target;
     const re = /^[A-Za-z ']*$/;
     if (value === '' || re.test(value)) {
@@ -35,7 +35,7 @@ export const Search = () => {
     }
   };
 
-  const handleSeason = seasonNumber => {
+  const handleSeason = (seasonNumber: number) => {
     if (seasonNumber <= 8) {
       setMaxLevel(MAX_LEVEL[0]);
     } else {
@@ -60,7 +60,7 @@ export const Search = () => {
   };
 
   const messages = () => {
-    if (error.message) {
+    if (error?.message) {
       return <em className='error'> - Error: {error.message}</em>;
     }
     if (loading) {
@@ -70,7 +70,7 @@ export const Search = () => {
       return (
         <em>
           {' '}
-          - Loaded {characters.length} Level {maxLevel} Characters
+          - Loaded {characters?.length} Level {maxLevel} Characters
         </em>
       );
     }
@@ -85,8 +85,8 @@ export const Search = () => {
           options={realms && realms.sort((a, b) => a.name.localeCompare(b.name)).map(a => a.name)}
           sx={{ width: 300 }}
           value={inputRealm}
-          onChange={(event, newValue) => {
-            setInputRealm(newValue);
+          onChange={(_, newValue) => {
+            setInputRealm(newValue ? newValue : '');
           }}
           renderInput={params => <TextField {...params} label='Realm Name' />}
         />
