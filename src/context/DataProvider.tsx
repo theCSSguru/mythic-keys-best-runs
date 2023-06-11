@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { urlFriendly } from '../utils/helpers';
 import {
   DataContextType,
@@ -44,8 +44,8 @@ export const DataProvider = ({ children }: DataContextType) => {
   });
 
   // Character States
-  const [characters, setCharacters] = useState<CharacterDataType>();
-  const [initialCharacters, setInitialCharacters] = useState<CharacterDataType>();
+  const [characters, setCharacters] = useState<CharacterDataType[]>();
+  const [initialCharacters, setInitialCharacters] = useState<CharacterDataType[]>();
 
   // Season State
   const [season, setSeason] = useState<SeasonType>(SEASONS[SEASONS.length - 1]);
@@ -57,9 +57,9 @@ export const DataProvider = ({ children }: DataContextType) => {
   const [error, setError] = useState<ErrorType>({ message: null });
 
   // Sort States
-  const [sortClass, setSortClass] = useState('DEFAULT');
-  const [sortName, setSortName] = useState('DEFAULT');
-  const [sortScore, setSortScore] = useState('DESC');
+  const [sortClass, setSortClass] = useState(SORT.DEFAULT);
+  const [sortName, setSortName] = useState(SORT.DEFAULT);
+  const [sortScore, setSortScore] = useState(SORT.DESC);
   const [sortedClass, setSortedClass] = useState(false);
   const [sortedClassAll, setSortedClassAll] = useState(false);
   const [sortedName, setSortedName] = useState(false);
@@ -123,19 +123,17 @@ export const DataProvider = ({ children }: DataContextType) => {
           [...mythicCharacterUrls].map(url =>
             axios
               .get(url)
-              .then(res => {
-                return res;
+              .then(response => {
+                return response.data;
               })
-              .catch(err => {
-                if (err.response.status === 404) {
-                  return { status: 404 };
+              .catch(error => {
+                if (error.response.status === 404) {
+                  return null;
                 }
               })
           )
         );
-        const mythicFilterStatus = mythicUrlGet
-          .filter(member => member?.status === 200)
-          .map((member: any) => member.data);
+        const mythicFilterStatus = mythicUrlGet.filter(a => a != null);
 
         const characterDataMatchStatus = mythicFilterStatus
           .map(member => {
