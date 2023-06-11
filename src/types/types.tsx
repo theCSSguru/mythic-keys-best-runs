@@ -1,7 +1,11 @@
 import { Dispatch, SetStateAction } from 'react';
 
-export type DataContextType = {
+export type DataProviderType = {
   children?: React.ReactNode;
+};
+
+export type DataContextType = {
+  token?: string;
   guild?: GuildType;
   setGuild: Dispatch<SetStateAction<GuildType>>;
   characters?: CharacterDataType[];

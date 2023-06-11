@@ -11,10 +11,10 @@ import {
   WowClassType,
   DungeonsType,
   ErrorType,
-  CharacterDataType
+  CharacterDataType,
+  DataProviderType
 } from '../types/types';
 import {
-  BATTLENET_OAUTH,
   BLIZZ_API_CHARACTER,
   BLIZZ_API_NAMESPACE,
   BLIZZ_API_WOW,
@@ -25,6 +25,7 @@ import {
   WOW_CLASS,
   WOW_DUNGEONS
 } from '../utils/constants';
+import { useToken } from '../hooks/useToken';
 
 const GuildState = {
   name: DEFAULT_GUILD.name,
@@ -71,7 +72,7 @@ const DataContextState = {
 
 export const DataContext = createContext<DataContextType>(DataContextState);
 
-export const DataProvider = ({ children }: DataContextType) => {
+export const DataProvider = ({ children }: DataProviderType) => {
   // Guild
   const [guild, setGuild] = useState<GuildType>(GuildState);
 
@@ -97,26 +98,9 @@ export const DataProvider = ({ children }: DataContextType) => {
   const [sortedName, setSortedName] = useState(DataContextState.sortedName);
   const [sortedScore, setSortedScore] = useState(DataContextState.sortedScore);
 
-  // Token State
-  const [token, setToken] = useState('');
-  useEffect(() => {
-    const getToken = async () => {
-      const tokenResponse = await axios.post(
-        BATTLENET_OAUTH,
-        new URLSearchParams({
-          grant_type: 'client_credentials'
-        }),
-        {
-          auth: {
-            username: import.meta.env.VITE_APP_CLIENT_ID,
-            password: import.meta.env.VITE_APP_CLIENT_SECRET
-          }
-        }
-      );
-      setToken(tokenResponse.data.access_token);
-    };
-    getToken();
-  }, []);
+  // Token
+  const { tokenData, tokenFetched } = useToken();
+  const token = tokenFetched ? tokenData.access_token : null;
 
   // Call WoW APIs and Construct Data
   useEffect(() => {
@@ -252,7 +236,7 @@ export const DataProvider = ({ children }: DataContextType) => {
         setLoaded(true);
       }
     };
-    if (token !== '') {
+    if (token !== null) {
       getData();
     }
   }, [token, guild?.slug, guild?.realm?.slug, guild?.faction?.name, season, maxLevel]);
